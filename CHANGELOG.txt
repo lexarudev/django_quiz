@@ -12,6 +12,7 @@ Changelog
 
  * Fixed regression in 1.5.1 on editing external links (Stephen Rice)
 
+<<<<<<< c79a2a47a0464646270c86c1511980f9e146cc44
 
 1.5.1 (07.06.2016)
 ~~~~~~~~~~~~~~~~~~
@@ -25,6 +26,10 @@ Changelog
  * Fix: Reverted fix for explorer menu scrolling with page content, as it blocked access to menus that exceed screen height
  * Fix: Image listing in the image chooser no longer becomes unpaginated after an invalid upload form submission (Stephen Rice)
  * Fix: Applied correct translation tags for 'permanent' / 'temporary' labels on redirects (Matt Westcott)
+=======
+ * Page slugs now allow unicode on Django >= 1.9 (Behzad Nategh)
+ * Image upload form in image chooser now performs client side validation so that the selected file is not lost in the submission (Jack Paine)
+>>>>>>> Unicode support for slug as of Django 1.9
 
 
 1.5 (31.05.2016)

@@ -138,7 +138,11 @@ Contributors
 * Bojan Mihelac
 * Robert Moggach
 * Stephen Rice
+<<<<<<< c79a2a47a0464646270c86c1511980f9e146cc44
 * Yann Fouillat (Gagaro)
+=======
+* Behzad Nategh
+>>>>>>> Unicode support for slug as of Django 1.9
 
 Translators
 ===========
