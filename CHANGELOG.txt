@@ -1,6 +1,7 @@
 Changelog
 =========
 
+<<<<<<< 1c954865923ea6a77401c17a0303c9d20fdeaffc
 1.5.3 (18.07.2016)
 ~~~~~~~~~~~~~~~~~~
 
@@ -28,6 +29,13 @@ Changelog
 
 
 1.5 (31.05.2016)
+=======
+1.6 (xx.xx.xxxx) - IN DEVELOPMENT
+~~~~~~~~~~~~~~~~
+
+
+1.5 (xx.xx.xxxx)
+>>>>>>> Version bump to start work on 1.6
 ~~~~~~~~~~~~~~~~
 
  * Added wagtail.contrib.modeladmin, an app for configuring arbitrary Django models to be edited through the Wagtail admin (Andy Babic)

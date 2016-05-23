@@ -4,9 +4,13 @@ Release notes
 .. toctree::
    :maxdepth: 1
 
+<<<<<<< 1c954865923ea6a77401c17a0303c9d20fdeaffc
    1.5.3
    1.5.2
    1.5.1
+=======
+   1.6
+>>>>>>> Version bump to start work on 1.6
    1.5
    1.4.6
    1.4.5
