@@ -19,6 +19,7 @@ Changelog
 
  * Fix: When editing a document link in rich text, the document ID is no longer erroneously interpreted as a page ID (Stephen Rice)
  * Fix: Removing embedded media from rich text by mouse click action now gets correctly registered as a change to the field (Loic Teixeira)
+<<<<<<< 3d9a3ace5009516e0b20be5fa93ff8031691c504
  * Fix: Rich text editor is no longer broken in InlinePanels (Matt Westcott, Gagaro)
  * Fix: Rich text editor is no longer broken in settings (Matt Westcott)
  * Fix: Link tooltip now shows correct urls for newly inserted document links (Matt Westcott)
@@ -34,6 +35,9 @@ Changelog
 
 1.5.1 (xx.xx.xxxx) - IN DEVELOPMENT
 ~~~~~~~~~~~~~~~~~~
+=======
+ * Fix: Rich text editor is no longer broken in InlinePanels (Matt Westcott, Yann Fouillat)
+>>>>>>> Ensure that form media required by InlinePanels is correctly pulled in to the edit page - fixes #2662.
 
 
 1.5 (31.05.2016)
