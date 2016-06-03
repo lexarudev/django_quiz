@@ -28,6 +28,7 @@ Bug fixes
  * Rich text editor is no longer broken in settings (Matt Westcott)
  * Link tooltip now shows correct urls for newly inserted document links (Matt Westcott)
  * Now page chooser (in a rich text editor) opens up at the link's parent page, rather than at the page itself (Matt Westcott)
+<<<<<<< c9c6234dbe8927b17ad6b2231ff5696472d68845
  * Reverted fix for explorer menu scrolling with page content, as it blocked access to menus that exceed screen height
  * Image listing in the image chooser no longer becomes unpaginated after an invalid upload form submission (Stephen Rice)
  * Confirmation message on the ModelAdmin delete view no longer errors if the model's string representation depends on the primary key (Yannick Chabbert)
@@ -37,3 +38,5 @@ Bug fixes
 =======
  * Rich text editor is no longer broken in InlinePanels (Matt Westcott, Yann Fouillat)
 >>>>>>> Ensure that form media required by InlinePanels is correctly pulled in to the edit page - fixes #2662.
+=======
+>>>>>>> Track parent page for internal links in rich text - fixes #2639

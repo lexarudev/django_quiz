@@ -24,6 +24,7 @@ Changelog
  * Fix: Rich text editor is no longer broken in settings (Matt Westcott)
  * Fix: Link tooltip now shows correct urls for newly inserted document links (Matt Westcott)
  * Fix: Now page chooser (in a rich text editor) opens up at the link's parent page, rather than at the page itself (Matt Westcott)
+<<<<<<< c9c6234dbe8927b17ad6b2231ff5696472d68845
  * Fix: Reverted fix for explorer menu scrolling with page content, as it blocked access to menus that exceed screen height
  * Fix: Image listing in the image chooser no longer becomes unpaginated after an invalid upload form submission (Stephen Rice)
  * Fix: Applied correct translation tags for 'permanent' / 'temporary' labels on redirects (Matt Westcott)
@@ -38,6 +39,8 @@ Changelog
 =======
  * Fix: Rich text editor is no longer broken in InlinePanels (Matt Westcott, Yann Fouillat)
 >>>>>>> Ensure that form media required by InlinePanels is correctly pulled in to the edit page - fixes #2662.
+=======
+>>>>>>> Track parent page for internal links in rich text - fixes #2639
 
 
 1.5 (31.05.2016)
