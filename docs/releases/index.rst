@@ -10,7 +10,11 @@ Release notes
    1.5.1
 =======
    1.6
+<<<<<<< a38a25ecb719d74297be29526a01a19e7468bfb8
 >>>>>>> Version bump to start work on 1.6
+=======
+   1.5.1
+>>>>>>> Add docs / changelog section for Wagtail 1.5.1
    1.5
    1.4.6
    1.4.5

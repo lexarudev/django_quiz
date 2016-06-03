@@ -1,6 +1,12 @@
+<<<<<<< a38a25ecb719d74297be29526a01a19e7468bfb8
 ===========================
 Wagtail 1.5.1 release notes
 ===========================
+=======
+============================================
+Wagtail 1.5.1 release notes - IN DEVELOPMENT
+============================================
+>>>>>>> Add docs / changelog section for Wagtail 1.5.1
 
 .. contents::
     :local:
@@ -14,6 +20,7 @@ What's new
 Bug fixes
 ~~~~~~~~~
 
+<<<<<<< a38a25ecb719d74297be29526a01a19e7468bfb8
  * When editing a document link in rich text, the document ID is no longer erroneously interpreted as a page ID (Stephen Rice)
  * Removing embedded media from rich text by mouse click action now gets correctly registered as a change to the field (Loic Teixeira)
  * Rich text editor is no longer broken in InlinePanels (Matt Westcott, Gagaro)
@@ -24,3 +31,5 @@ Bug fixes
  * Image listing in the image chooser no longer becomes unpaginated after an invalid upload form submission (Stephen Rice)
  * Confirmation message on the ModelAdmin delete view no longer errors if the model's string representation depends on the primary key (Yannick Chabbert)
  * Applied correct translation tags for 'permanent' / 'temporary' labels on redirects (Matt Westcott)
+=======
+>>>>>>> Add docs / changelog section for Wagtail 1.5.1
