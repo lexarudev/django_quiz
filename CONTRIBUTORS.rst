@@ -142,11 +142,15 @@ Contributors
 * Yann Fouillat (Gagaro)
 =======
 * Behzad Nategh
+<<<<<<< 24d8e7f20827518fe2718b4fc5f422f6ae22e8b6
 <<<<<<< 3d9a3ace5009516e0b20be5fa93ff8031691c504
 >>>>>>> Unicode support for slug as of Django 1.9
 =======
 * Yann Fouillat
 >>>>>>> Ensure that form media required by InlinePanels is correctly pulled in to the edit page - fixes #2662.
+=======
+* Yann Fouillat (Gagaro)
+>>>>>>> Credit Gagaro under preferred name
 
 Translators
 ===========
