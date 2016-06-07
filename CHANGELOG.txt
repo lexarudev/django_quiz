@@ -7,6 +7,7 @@ Changelog
  * Fix: Pin html5lib to version 0.999999 to prevent breakage caused by internal API changes (Liam Brenner)
 
 
+<<<<<<< a282da8be0324bed88f0aa2e80f00fbb7117540e
 1.5.2 (08.06.2016)
 ~~~~~~~~~~~~~~~~~~
 
@@ -14,6 +15,8 @@ Changelog
 
 <<<<<<< c79a2a47a0464646270c86c1511980f9e146cc44
 
+=======
+>>>>>>> mark 1.5.1 as no longer in development
 1.5.1 (07.06.2016)
 ~~~~~~~~~~~~~~~~~~
 

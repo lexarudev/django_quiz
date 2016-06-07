@@ -1,3 +1,4 @@
+<<<<<<< a282da8be0324bed88f0aa2e80f00fbb7117540e
 <<<<<<< a38a25ecb719d74297be29526a01a19e7468bfb8
 ===========================
 Wagtail 1.5.1 release notes
@@ -7,6 +8,11 @@ Wagtail 1.5.1 release notes
 Wagtail 1.5.1 release notes - IN DEVELOPMENT
 ============================================
 >>>>>>> Add docs / changelog section for Wagtail 1.5.1
+=======
+===========================
+Wagtail 1.5.1 release notes
+===========================
+>>>>>>> mark 1.5.1 as no longer in development
 
 .. contents::
     :local:
