@@ -1,5 +1,5 @@
 Authors
-================
+=======
 
 * Matthew Westcott (Torchbox) twitter: @gasmanic
 * David Cranwell (Torchbox) twitter: @davecranwell
@@ -150,7 +150,11 @@ Contributors
 >>>>>>> Ensure that form media required by InlinePanels is correctly pulled in to the edit page - fixes #2662.
 =======
 * Yann Fouillat (Gagaro)
+<<<<<<< 2844ce1f4d9fb3bc9c7536b6d149105d9aeb7c8f
 >>>>>>> Credit Gagaro under preferred name
+=======
+* Jonny Scholes
+>>>>>>> Release notes for #2691
 
 Translators
 ===========
