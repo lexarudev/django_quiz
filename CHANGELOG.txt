@@ -21,8 +21,17 @@ Changelog
 
 <<<<<<< c79a2a47a0464646270c86c1511980f9e146cc44
 
+<<<<<<< c2e9e268eddbf63e0aea2fe79abecee40b6ec3db
 =======
 >>>>>>> mark 1.5.1 as no longer in development
+=======
+1.5.2 (08.06.2016)
+~~~~~~~~~~~~~~~~~~
+
+ * Fixed regression in 1.5.1 on editing external links (Stephen Rice)
+
+
+>>>>>>> Release note for 1.5.2
 1.5.1 (07.06.2016)
 ~~~~~~~~~~~~~~~~~~
 
