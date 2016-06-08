@@ -4,7 +4,13 @@ Changelog
 1.5.3 (18.07.2016)
 ~~~~~~~~~~~~~~~~~~
 
+<<<<<<< c6bb84a84af5fae8f2ef97fae24124cc11531694
  * Fix: Pin html5lib to version 0.999999 to prevent breakage caused by internal API changes (Liam Brenner)
+=======
+ * Page slugs now allow unicode on Django >= 1.9 (Behzad Nategh)
+ * Image upload form in image chooser now performs client side validation so that the selected file is not lost in the submission (Jack Paine)
+ * oEmbed URL for audioBoom was updated (Janneke Janssen)
+>>>>>>> Release notes for #2684
 
 
 <<<<<<< a282da8be0324bed88f0aa2e80f00fbb7117540e
