@@ -16,7 +16,11 @@ Changelog
 =======
 =======
  * Remember tree location in page chooser when switching between Internal / External / Email link (Matt Westcott)
+<<<<<<< 8a1ed023dd19b470a245dfec9440f57721952a98
 >>>>>>> Release notes for #2677
+=======
+ * `FieldRowPanel` now creates equal-width columns automatically if `col*` classnames are not specified (Chris Rogers)
+>>>>>>> Release note / docs for #2257
  * Fix: Email templates and document uploader now support custom `STATICFILES_STORAGE` (Jonny Scholes)
 >>>>>>> Release notes for #2691
 
