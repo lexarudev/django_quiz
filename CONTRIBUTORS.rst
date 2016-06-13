@@ -154,7 +154,11 @@ Contributors
 >>>>>>> Credit Gagaro under preferred name
 =======
 * Jonny Scholes
+<<<<<<< 05882f695687dbc3cb276f70020e5a9e4e61e26d
 >>>>>>> Release notes for #2691
+=======
+* Richard McMillan
+>>>>>>> Validate against duplicate form field names - fixes #585
 
 Translators
 ===========
