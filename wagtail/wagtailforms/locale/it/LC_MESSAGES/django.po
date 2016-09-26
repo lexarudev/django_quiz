@@ -3,13 +3,13 @@
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Translators:
-# Giacomo Ghizzani <giacomo.ghz@gmail.com>, 2015
+# Giacomo Ghizzani <giacomo.ghz@gmail.com>, 2015-2016
 msgid ""
 msgstr ""
 "Project-Id-Version: Wagtail\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-05-18 21:37+0000\n"
-"PO-Revision-Date: 2016-05-11 20:34+0000\n"
+"POT-Creation-Date: 2016-08-01 13:25+0000\n"
+"PO-Revision-Date: 2016-08-01 13:29+0000\n"
 "Last-Translator: Matt Westcott <matthew@torchbox.com>\n"
 "Language-Team: Italian (http://www.transifex.com/torchbox/wagtail/language/"
 "it/)\n"
@@ -92,10 +92,6 @@ msgstr "testo di aiuto"
 msgid "to address"
 msgstr "indirizzo destinazione"
 
-msgid "Optional - form submissions will be emailed to this address"
-msgstr ""
-"Optional - All'invio il form verrà spedito per email a questo indirizzo"
-
 msgid "from address"
 msgstr "indirizzo mittente"
 
@@ -150,6 +146,9 @@ msgstr "Data di invio"
 
 msgid "Actions"
 msgstr "Azioni"
+
+msgid "delete"
+msgstr "elimina"
 
 msgid "No form pages have been created."
 msgstr "Nessuna pagina form è stata creata."

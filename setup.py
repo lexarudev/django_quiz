@@ -2,7 +2,7 @@
 
 import sys
 
-from wagtail.wagtailcore import __version__
+from wagtail import __version__
 from wagtail.utils.setup import assets, sdist, check_bdist_egg
 
 try:
@@ -21,14 +21,14 @@ except ImportError:
 
 
 install_requires = [
-    "Django>=1.8.1,<1.10",
+    "Django>=1.8.1,<1.11",
     "django-modelcluster>=2.0,<3.0",
     "django-taggit>=0.18,<0.19",
     "django-treebeard>=3.0,<5.0",
     "djangorestframework>=3.1.3",
     "Pillow>=2.6.1",
-    "beautifulsoup4>=4.3.2",
-    "html5lib==0.999999",
+    "beautifulsoup4>=4.5.1",
+    "html5lib>=0.999,<1",
     "Unidecode>=0.04.14",
     "Willow>=0.3b4,<0.4",
 ]
@@ -42,10 +42,12 @@ testing_extras = [
     'Pillow>=2.7.0',
     'elasticsearch>=1.0.0',
     'Jinja2>=2.8,<3.0',
+    'boto3>=1.1,<1.2',
 
     # For coverage and PEP8 linting
     'coverage>=3.7.0',
     'flake8>=2.2.0',
+    'isort>=4.2.0',
 ]
 
 # Documentation dependencies

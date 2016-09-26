@@ -48,7 +48,7 @@ This example represents a typical blog post:
         )
 
 
-        # Search index configuraiton
+        # Search index configuration
 
         search_fields = Page.search_fields + [
             index.SearchField('body'),
@@ -439,6 +439,8 @@ This is because ``Page`` enforces ordering QuerySets by path. Instead, you must 
 .. code-block:: python
 
     news_items = NewsItemPage.objects.live().order_by('-publication_date')
+
+.. _custom_page_managers:
 
 Custom Page managers
 --------------------

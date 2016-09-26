@@ -3,16 +3,17 @@
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Translators:
-# Eugene MechanisM <contact@mechanism.name>, 2014-2015
+# Andrey Avdey <talkerbox@live.com>, 2016
+# Eugene MechanisM <eugene@mechanism.pro>, 2014-2015
 # Mikalai Radchuk <radchuk.m@gmail.com>, 2016
-# Sergiy Khalymon <sergiykhalimon@gmail.com>, 2015
+# Sergey Khalymon <sergiykhalimon@gmail.com>, 2015
 msgid ""
 msgstr ""
 "Project-Id-Version: Wagtail\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-05-18 21:37+0000\n"
-"PO-Revision-Date: 2016-05-26 13:28+0000\n"
-"Last-Translator: Mikalai Radchuk <radchuk.m@gmail.com>\n"
+"POT-Creation-Date: 2016-08-01 13:25+0000\n"
+"PO-Revision-Date: 2016-08-01 14:02+0000\n"
+"Last-Translator: Andrey Avdey <talkerbox@live.com>\n"
 "Language-Team: Russian (http://www.transifex.com/torchbox/wagtail/language/"
 "ru/)\n"
 "MIME-Version: 1.0\n"
@@ -22,6 +23,10 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<12 || n%100>14) ? 1 : n%10==0 || (n%10>=5 && n%10<=9) || (n"
 "%100>=11 && n%100<=14)? 2 : 3);\n"
+
+#, python-format
+msgid "There is another field with the label %s, please change one of them."
+msgstr "Уже есть другое поле с меткой %s,  измените одно из них."
 
 msgid "Single line text"
 msgstr "Однострочный текст"
@@ -45,7 +50,7 @@ msgid "Checkboxes"
 msgstr "Флажки"
 
 msgid "Drop down"
-msgstr "Выпадающий вниз"
+msgstr "Выпадающий"
 
 msgid "Radio buttons"
 msgstr "Радиокнопки"
@@ -63,7 +68,7 @@ msgid "form submission"
 msgstr "добавление формы"
 
 msgid "label"
-msgstr "имя"
+msgstr "метка"
 
 msgid "The label of the form field"
 msgstr "Метка поля формы"
@@ -96,9 +101,12 @@ msgstr "текст подсказки"
 msgid "to address"
 msgstr "адрес назначения"
 
-msgid "Optional - form submissions will be emailed to this address"
+msgid ""
+"Optional - form submissions will be emailed to these addresses. Separate "
+"multiple addresses by comma."
 msgstr ""
-"Не обязательно - заполненные формы будут отправляться на этот почтовый адрес"
+"Не обязательно - заполненные формы будут отправляться на эти почтовые адрес. "
+"Разделяйте адреса запятыми."
 
 msgid "from address"
 msgstr "адрес отправителя"

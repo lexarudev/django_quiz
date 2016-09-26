@@ -9,11 +9,11 @@ import taggit.managers
 from django.conf import settings
 from django.db import migrations, models
 
-import wagtail.wagtailadmin.taggable
 import wagtail.wagtailcore.blocks
 import wagtail.wagtailcore.fields
 import wagtail.wagtailimages.blocks
 import wagtail.wagtailimages.models
+import wagtail.wagtailsearch.index
 
 
 class Migration(migrations.Migration):
@@ -145,7 +145,7 @@ class Migration(migrations.Migration):
             options={
                 'abstract': False,
             },
-            bases=(models.Model, wagtail.wagtailadmin.taggable.TagSearchable),
+            bases=(models.Model, wagtail.wagtailsearch.index.Indexed),
         ),
         migrations.CreateModel(
             name='CustomImageFilePath',
@@ -167,7 +167,7 @@ class Migration(migrations.Migration):
             options={
                 'abstract': False,
             },
-            bases=(models.Model, wagtail.wagtailadmin.taggable.TagSearchable),
+            bases=(models.Model, wagtail.wagtailsearch.index.Indexed),
         ),
         migrations.CreateModel(
             name='CustomManagerPage',
@@ -280,7 +280,7 @@ class Migration(migrations.Migration):
                 ('label', models.CharField(help_text='The label of the form field', max_length=255, verbose_name='label')),
                 ('field_type', models.CharField(choices=[('singleline', 'Single line text'), ('multiline', 'Multi-line text'), ('email', 'Email'), ('number', 'Number'), ('url', 'URL'), ('checkbox', 'Checkbox'), ('checkboxes', 'Checkboxes'), ('dropdown', 'Drop down'), ('radio', 'Radio buttons'), ('date', 'Date'), ('datetime', 'Date/time')], max_length=16, verbose_name='field type')),
                 ('required', models.BooleanField(default=True, verbose_name='required')),
-                ('choices', models.CharField(blank=True, help_text='Comma separated list of choices. Only applicable in checkboxes, radio and dropdown.', max_length=512, verbose_name='choices')),
+                ('choices', models.TextField(blank=True, help_text='Comma separated list of choices. Only applicable in checkboxes, radio and dropdown.', verbose_name='choices')),
                 ('default_value', models.CharField(blank=True, help_text='Default value. Comma separated values supported for checkboxes.', max_length=255, verbose_name='default value')),
                 ('help_text', models.CharField(blank=True, max_length=255, verbose_name='help text')),
             ],
@@ -293,7 +293,7 @@ class Migration(migrations.Migration):
             name='FormPage',
             fields=[
                 ('page_ptr', models.OneToOneField(auto_created=True, on_delete=django.db.models.deletion.CASCADE, parent_link=True, primary_key=True, serialize=False, to='wagtailcore.Page')),
-                ('to_address', models.CharField(blank=True, help_text='Optional - form submissions will be emailed to this address', max_length=255, verbose_name='to address')),
+                ('to_address', models.CharField(blank=True, help_text='Optional - form submissions will be emailed to these addresses. Separate multiple addresses by comma.', max_length=255, verbose_name='to address')),
                 ('from_address', models.CharField(blank=True, max_length=255, verbose_name='from address')),
                 ('subject', models.CharField(blank=True, max_length=255, verbose_name='subject')),
             ],

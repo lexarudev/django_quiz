@@ -1,6 +1,2 @@
-Django>=1.9,<1.10
-<<<<<<< 1c954865923ea6a77401c17a0303c9d20fdeaffc
-wagtail>=1.5,<1.6
-=======
-wagtail==1.6a0
->>>>>>> Version bump to start work on 1.6
+Django>=1.10,<1.11
+wagtail==1.7a0

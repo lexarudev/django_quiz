@@ -1,7 +1,8 @@
-__version__ = '1.5.3'
-# Required for npm package for frontend
-__semver__ = '1.5.3'
+from __future__ import absolute_import, unicode_literals
 default_app_config = 'wagtail.wagtailcore.apps.WagtailCoreAppConfig'
+
+# Imported for historical reasons
+from wagtail import __semver__, __version__  # noqa
 
 
 def setup():

@@ -7,11 +7,13 @@ from contextlib import contextmanager
 
 import django
 from django.conf import settings
+from django.core import checks
 from django.core.exceptions import ImproperlyConfigured
 from django.core.files import File
 from django.core.urlresolvers import reverse
 from django.db import models
-from django.db.models.signals import pre_delete, pre_save
+from django.db.models.signals import post_delete, pre_save
+from django.db.utils import DatabaseError
 from django.dispatch.dispatcher import receiver
 from django.forms.widgets import flatatt
 from django.utils.encoding import python_2_unicode_compatible
@@ -23,7 +25,6 @@ from taggit.managers import TaggableManager
 from unidecode import unidecode
 from willow.image import Image as WillowImage
 
-from wagtail.wagtailadmin.taggable import TagSearchable
 from wagtail.wagtailadmin.utils import get_object_usage
 from wagtail.wagtailcore import hooks
 from wagtail.wagtailcore.models import CollectionMember
@@ -67,7 +68,7 @@ def get_rendition_upload_to(instance, filename):
 
 
 @python_2_unicode_compatible
-class AbstractImage(CollectionMember, TagSearchable):
+class AbstractImage(CollectionMember, index.Indexed, models.Model):
     title = models.CharField(max_length=255, verbose_name=_('title'))
     file = models.ImageField(
         verbose_name=_('file'), upload_to=get_upload_to, width_field='width', height_field='height'
@@ -137,7 +138,11 @@ class AbstractImage(CollectionMember, TagSearchable):
         return reverse('wagtailimages:image_usage',
                        args=(self.id,))
 
-    search_fields = TagSearchable.search_fields + CollectionMember.search_fields + [
+    search_fields = CollectionMember.search_fields + [
+        index.SearchField('title', partial_match=True, boost=10),
+        index.RelatedFields('tags', [
+            index.SearchField('name', partial_match=True, boost=10),
+        ]),
         index.FilterField('uploaded_by_user'),
     ]
 
@@ -340,8 +345,8 @@ def image_feature_detection(sender, instance, **kwargs):
             instance.set_focal_point(instance.get_suggested_focal_point())
 
 
-# Receive the pre_delete signal and delete the file associated with the model instance.
-@receiver(pre_delete, sender=Image)
+# Receive the post_delete signal and delete the file associated with the model instance.
+@receiver(post_delete, sender=Image)
 def image_delete(sender, instance, **kwargs):
     # Pass false so FileField doesn't save the model.
     instance.file.delete(False)
@@ -455,7 +460,8 @@ class Filter(models.Model):
 
 
 class AbstractRendition(models.Model):
-    filter = models.ForeignKey(Filter, related_name='+')
+    filter = models.ForeignKey(Filter, related_name='+', null=True, blank=True)
+    filter_spec = models.CharField(max_length=255, db_index=True, blank=True, default='')
     file = models.ImageField(upload_to=get_rendition_upload_to, width_field='width', height_field='height')
     width = models.IntegerField(editable=False)
     height = models.IntegerField(editable=False)
@@ -502,12 +508,48 @@ class AbstractRendition(models.Model):
         filename = self.file.field.storage.get_valid_name(filename)
         return os.path.join(folder_name, filename)
 
+    def save(self, *args, **kwargs):
+        # populate the `filter_spec` field with the spec string of the filter. In Wagtail 1.8
+        # Filter will be dropped as a model, and lookups will be done based on this string instead
+        self.filter_spec = self.filter.spec
+        return super(AbstractRendition, self).save(*args, **kwargs)
+
+    @classmethod
+    def check(cls, **kwargs):
+        errors = super(AbstractRendition, cls).check(**kwargs)
+
+        # If a filter_spec column exists on this model, and contains null entries, warn that
+        # a data migration needs to be performed to populate it
+
+        try:
+            null_filter_spec_exists = cls.objects.filter(filter_spec='').exists()
+        except DatabaseError:
+            # The database is not in a state where the above lookup makes sense;
+            # this is entirely expected, because system checks are performed before running
+            # migrations. We're only interested in the specific case where the column exists
+            # in the db and contains nulls.
+            null_filter_spec_exists = False
+
+        if null_filter_spec_exists:
+            errors.append(
+                checks.Warning(
+                    "Custom image model %r needs a data migration to populate filter_src" % cls,
+                    hint="The database representation of image filters has been changed, and a data "
+                    "migration needs to be put in place before upgrading to Wagtail 1.8, in order to "
+                    "avoid data loss. See http://docs.wagtail.io/en/latest/releases/1.7.html#filter-spec-migration",
+                    obj=cls,
+                    id='wagtailimages.W001',
+                )
+            )
+
+        return errors
+
     class Meta:
         abstract = True
 
 
 class Rendition(AbstractRendition):
-    image = models.ForeignKey(Image, related_name='renditions')
+    image = models.ForeignKey(Image, related_name='renditions', on_delete=models.CASCADE)
 
     class Meta:
         unique_together = (
@@ -515,8 +557,8 @@ class Rendition(AbstractRendition):
         )
 
 
-# Receive the pre_delete signal and delete the file associated with the model instance.
-@receiver(pre_delete, sender=Rendition)
+# Receive the post_delete signal and delete the file associated with the model instance.
+@receiver(post_delete, sender=Rendition)
 def rendition_delete(sender, instance, **kwargs):
     # Pass false so FileField doesn't save the model.
     instance.file.delete(False)
