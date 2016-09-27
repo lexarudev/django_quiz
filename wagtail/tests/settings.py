@@ -82,7 +82,7 @@ if django.VERSION >= (1, 10):
         'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
         'wagtail.wagtailcore.middleware.SiteMiddleware',
-        'wagtail.wagtailcore.middleware.RequestCacheMIddleware',
+        'wagtail.wagtailcore.middleware.RequestCacheMiddleware',
         'wagtail.wagtailredirects.middleware.RedirectMiddleware',
     )
 else:
@@ -96,7 +96,7 @@ else:
         'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
         'wagtail.wagtailcore.middleware.SiteMiddleware',
-        'wagtail.wagtailcore.middleware.RequestCacheMIddleware',
+        'wagtail.wagtailcore.middleware.RequestCacheMiddleware',
         'wagtail.wagtailredirects.middleware.RedirectMiddleware',
     )
 

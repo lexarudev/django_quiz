@@ -25,7 +25,7 @@ class SiteMiddleware(MiddlewareMixin):
             request.site = None
 
 
-class RequestCacheMiddleware(object):
+class RequestCacheMiddleware(MiddlewareMixin):
     """
     Creates a fresh cache instance as request.cache. The cache instance lives only as long as request does.
     """
