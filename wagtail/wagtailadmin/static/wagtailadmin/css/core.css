@@ -1219,7 +1219,7 @@ dl {
 }
 
 dt {
-  color: #cccccc;
+  color: #b3b3b3;
   text-transform: uppercase;
   font-size: 0.9em;
 }
@@ -1991,6 +1991,13 @@ label,
   display: inline;
 }
 
+.plain-checkbox-label {
+  float: none;
+  color: inherit;
+  font-weight: inherit;
+  font-size: inherit;
+}
+
 input,
 textarea,
 select,
@@ -2273,6 +2280,8 @@ input[type=checkbox]:checked:before {
   text-align: center;
   background-color: rgba(0, 0, 0, 0.2);
   display: block;
+  border-top-left-radius: inherit;
+  border-bottom-left-radius: inherit;
 }
 
 .button.button-small.bicolor {
@@ -2421,7 +2430,7 @@ body.ready .button.button-longrunning span {
 .button-small {
   padding: 0 0.8em;
   height: 2em;
-  font-size: 0.85em;
+  font-size: 0.95em;
 }
 
 .button-secondary {
@@ -3209,7 +3218,7 @@ ul.listing li {
 
 .listing {
   margin-bottom: 2em;
-  color: #999999;
+  color: gray;
   font-size: 0.95em;
 }
 
@@ -4894,10 +4903,10 @@ body.ready .nav-main li {
   -webkit-font-smoothing: auto;
   text-decoration: none;
   display: block;
-  color: #aaa;
+  color: #cacaca;
   padding: 0.8em 1.7em;
-  font-size: 0.95em;
-  font-weight: 300;
+  font-size: 1em;
+  font-weight: normal;
 }
 
 body.ready .nav-main a {
@@ -4929,7 +4938,7 @@ body.ready .nav-main a {
   position: absolute;
   right: 0.5em;
   top: 0.5em;
-  margin-top: 0.15em;
+  margin-top: 0;
 }
 
 .nav-main .menu-active {
@@ -4986,8 +4995,13 @@ body.ready .nav-main a {
   border: 0;
 }
 
+.nav-submenu .wagtail-version {
+  padding: 1.2em 1.7em;
+  text-align: center;
+}
+
 .explorer {
-  font-size: 0.95em;
+  font-size: 1em;
 }
 
 .nav-search {
@@ -5027,7 +5041,7 @@ body.ready .nav-main a {
   cursor: pointer;
   border: 1px solid #4d4d4d;
   background-color: #404040;
-  color: #aaa;
+  color: #cacaca;
   padding: 0.8em 2.5em 0.8em 1em;
 }
 
@@ -5200,7 +5214,7 @@ body.explorer-open .explorer-close {
     font-weight: 500;
     text-transform: none;
     text-align: center;
-    color: #aaa;
+    color: #cacaca;
   }
   .nav-submenu h2:before {
     font-size: 4em;
@@ -5209,6 +5223,9 @@ body.explorer-open .explorer-close {
     margin: 0 0 0.2em;
     width: 100%;
     opacity: 0.15;
+  }
+  .nav-submenu .footer {
+    position: absolute;
   }
   li.submenu-active {
     background: #262626;
