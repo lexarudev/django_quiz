@@ -137,12 +137,12 @@ class DbWhitelister(Whitelister):
             link_attrs['linktype'] = link_type
             tag.attrs.clear()
             tag.attrs.update(**link_attrs)
-        # rrollins - 2016-10-5
-        # Commented this out because it breaks some of our imported page content from Rails.
-        # Related issue on wagtail's github: https://github.com/torchbox/wagtail/issues/3054
-        #  else:
-        #      if tag.name == 'div':
-        #          tag.name = 'p'
+        else:
+            # rrollins - 2016-10-5
+            # Commented this out because it breaks some of our imported page content from Rails.
+            # Related issue on wagtail's github: https://github.com/torchbox/wagtail/issues/3054
+            # if tag.name == 'div':
+            #     tag.name = 'p'
 
             super(DbWhitelister, cls).clean_tag_node(doc, tag)
 
