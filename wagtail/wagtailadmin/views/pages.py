@@ -40,7 +40,6 @@ def explorer_nav(request):
 
 def index(request, parent_page_id=None):
     if parent_page_id:
-<<<<<<< HEAD
         parent_page = get_page_if_explorable(parent_page_id, request)
     else:
         # The user visited /admin/pages/, so we need to figure out the appropriate "root page" to show them.
@@ -49,11 +48,6 @@ def index(request, parent_page_id=None):
             cca_path = get_closest_common_ancestor_path(request)
             if cca_path:
                 parent_page = Page.objects.get(path=cca_path)
-=======
-        parent_page = get_object_or_404(Page, id=parent_page_id).specific
-    else:
-        parent_page = Page.get_first_root_node().specific
->>>>>>> upstream/master
 
     pages = parent_page.get_explorable_children(request).prefetch_related('content_type')
 
