@@ -20,8 +20,9 @@ from wagtail.wagtailadmin.forms import CopyForm, SearchForm
 from wagtail.wagtailadmin.utils import get_page_if_explorable, send_notification
 from wagtail.wagtailcore import hooks
 from wagtail.wagtailcore.models import (
-    Page, PageRevision, filter_explorable_pages, get_closest_common_ancestor_path, get_navigation_menu_items
+    Page, PageRevision, UserPagePermissionsProxy, filter_explorable_pages, get_closest_common_ancestor_path, get_navigation_menu_items
 )
+from wagtail.wagtailadmin.navigation import get_navigation_menu_items
 
 
 def get_valid_next_url_from_request(request):
@@ -33,7 +34,7 @@ def get_valid_next_url_from_request(request):
 
 def explorer_nav(request):
     return render(request, 'wagtailadmin/shared/explorer_nav.html', {
-        'nodes': get_navigation_menu_items(request),
+        'nodes': get_navigation_menu_items(request.user),
     })
 
 
@@ -182,6 +183,14 @@ def create(request, content_type_app_name, content_type_model_name, parent_page_
     if page_class not in parent_page.creatable_subpage_models():
         raise PermissionDenied
 
+    if not page_class.can_create_at(parent_page):
+        raise PermissionDenied
+
+    for fn in hooks.get_hooks('before_create_page'):
+        result = fn(request, parent_page, page_class)
+        if hasattr(result, 'status_code'):
+            return result
+
     page = page_class(owner=request.user)
     edit_handler_class = page_class.get_edit_handler()
     form_class = edit_handler_class.get_form_class(page_class)
@@ -261,10 +270,12 @@ def create(request, content_type_app_name, content_type_model_name, parent_page_
         else:
             messages.error(request, _("The page could not be created due to validation errors"))
             edit_handler = edit_handler_class(instance=page, form=form)
+            has_unsaved_changes = True
     else:
         signals.init_new_page.send(sender=create, page=page, parent=parent_page)
         form = form_class(instance=page)
         edit_handler = edit_handler_class(instance=page, form=form)
+        has_unsaved_changes = False
 
     return render(request, 'wagtailadmin/pages/create.html', {
         'content_type': content_type,
@@ -274,6 +285,7 @@ def create(request, content_type_app_name, content_type_model_name, parent_page_
         'preview_modes': page.preview_modes,
         'form': form,
         'next': next_url,
+        'has_unsaved_changes': has_unsaved_changes,
     })
 
 
@@ -288,6 +300,11 @@ def edit(request, page_id):
     page_perms = page.permissions_for_user(request.user)
     if not page_perms.can_edit():
         raise PermissionDenied
+
+    for fn in hooks.get_hooks('before_edit_page'):
+        result = fn(request, page)
+        if hasattr(result, 'status_code'):
+            return result
 
     edit_handler_class = page_class.get_edit_handler()
     form_class = edit_handler_class.get_form_class(page_class)
@@ -323,7 +340,7 @@ def edit(request, page_id):
                 revision.publish()
                 # Need to reload the page because the URL may have changed, and we
                 # need the up-to-date URL for the "View Live" button.
-                page = Page.objects.get(pk=page.pk)
+                page = page.specific_class.objects.get(pk=page.pk)
 
             # Notifications
             if is_publishing:
@@ -453,9 +470,11 @@ def edit(request, page_id):
                     if formset.errors
                 ])
             )
+            has_unsaved_changes = True
     else:
         form = form_class(instance=page)
         edit_handler = edit_handler_class(instance=page, form=form)
+        has_unsaved_changes = False
 
     # Check for revisions still undergoing moderation and warn
     if latest_revision and latest_revision.submitted_for_moderation:
@@ -469,6 +488,7 @@ def edit(request, page_id):
         'preview_modes': page.preview_modes,
         'form': form,
         'next': next_url,
+        'has_unsaved_changes': has_unsaved_changes,
     })
 
 
@@ -476,6 +496,11 @@ def delete(request, page_id):
     page = get_object_or_404(Page, id=page_id)
     if not page.permissions_for_user(request.user).can_delete():
         raise PermissionDenied
+
+    for fn in hooks.get_hooks('before_delete_page'):
+        result = fn(request, page)
+        if hasattr(result, 'status_code'):
+            return result
 
     next_url = get_valid_next_url_from_request(request)
 
@@ -503,7 +528,7 @@ def delete(request, page_id):
 
 def view_draft(request, page_id):
     page = get_object_or_404(Page, id=page_id).get_latest_revision_as_page()
-    return page.serve_preview(page.dummy_request(), page.default_preview_mode)
+    return page.serve_preview(page.dummy_request(request), page.default_preview_mode)
 
 
 def preview_on_edit(request, page_id):
@@ -523,7 +548,7 @@ def preview_on_edit(request, page_id):
         page.full_clean()
 
         preview_mode = request.GET.get('mode', page.default_preview_mode)
-        response = page.serve_preview(page.dummy_request(), preview_mode)
+        response = page.serve_preview(page.dummy_request(request), preview_mode)
         response['X-Wagtail-Preview'] = 'ok'
         return response
 
@@ -535,6 +560,7 @@ def preview_on_edit(request, page_id):
             'edit_handler': edit_handler,
             'preview_modes': page.preview_modes,
             'form': form,
+            'has_unsaved_changes': True,
         })
         response['X-Wagtail-Preview'] = 'error'
         return response
@@ -583,7 +609,7 @@ def preview_on_create(request, content_type_app_name, content_type_model_name, p
         page.path = Page._get_children_path_interval(parent_page.path)[1]
 
         preview_mode = request.GET.get('mode', page.default_preview_mode)
-        response = page.serve_preview(page.dummy_request(), preview_mode)
+        response = page.serve_preview(page.dummy_request(request), preview_mode)
         response['X-Wagtail-Preview'] = 'ok'
         return response
 
@@ -597,6 +623,7 @@ def preview_on_create(request, content_type_app_name, content_type_model_name, p
             'edit_handler': edit_handler,
             'preview_modes': page.preview_modes,
             'form': form,
+            'has_unsaved_changes': True,
         })
         response['X-Wagtail-Preview'] = 'error'
         return response
@@ -636,13 +663,22 @@ def preview_loading(request):
 def unpublish(request, page_id):
     page = get_object_or_404(Page, id=page_id).specific
 
-    if not page.permissions_for_user(request.user).can_unpublish():
+    user_perms = UserPagePermissionsProxy(request.user)
+    if not user_perms.for_page(page).can_unpublish():
         raise PermissionDenied
 
     next_url = get_valid_next_url_from_request(request)
 
     if request.method == 'POST':
+        include_descendants = request.POST.get("include_descendants", False)
+
         page.unpublish()
+
+        if include_descendants:
+            live_descendant_pages = page.get_descendants().live().specific()
+            for live_descendant_page in live_descendant_pages:
+                if user_perms.for_page(live_descendant_page).can_unpublish():
+                    live_descendant_page.unpublish()
 
         messages.success(request, _("Page '{0}' unpublished.").format(page.title), buttons=[
             messages.button(reverse('wagtailadmin_pages:edit', args=(page.id,)), _('Edit'))
@@ -655,6 +691,7 @@ def unpublish(request, page_id):
     return render(request, 'wagtailadmin/pages/confirm_unpublish.html', {
         'page': page,
         'next': next_url,
+        'live_descendant_count': page.get_descendants().live().count(),
     })
 
 
@@ -683,6 +720,9 @@ def move_choose_destination(request, page_to_move_id, viewed_page_id=None):
         )
 
         child_pages.append(target)
+
+    # Pagination
+    paginator, child_pages = paginate(request, child_pages, per_page=50)
 
     return render(request, 'wagtailadmin/pages/move_choose_destination.html', {
         'page_to_move': page_to_move,
@@ -1021,4 +1061,4 @@ def revisions_view(request, page_id, revision_id):
     revision = get_object_or_404(page.revisions, id=revision_id)
     revision_page = revision.as_page_object()
 
-    return revision_page.serve_preview(page.dummy_request(), page.default_preview_mode)
+    return revision_page.serve_preview(page.dummy_request(request), page.default_preview_mode)

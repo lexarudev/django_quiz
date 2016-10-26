@@ -138,7 +138,7 @@ ModelAdminGroup allows you to group them all together nicely.
         menu_label = 'Snippet Model'  # ditch this to use verbose_name_plural from model
         menu_icon = 'snippet'  # change as required
         list_display = ('title', 'example_field2', 'example_field3')
-        list_filter = (example_field2', 'example_field3')
+        list_filter = ('example_field2', 'example_field3')
         search_fields = ('title',)
 
 
@@ -147,7 +147,7 @@ ModelAdminGroup allows you to group them all together nicely.
         menu_label = 'Some other model'  # ditch this to use verbose_name_plural from model
         menu_icon = 'snippet'  # change as required
         list_display = ('title', 'example_field2', 'example_field3')
-        list_filter = (example_field2', 'example_field3')
+        list_filter = ('example_field2', 'example_field3')
         search_fields = ('title',)
 
 
@@ -218,3 +218,47 @@ methods), giving you lots of flexibility when it comes to output.
 giving your users an easy way to find what they're looking for.
 `Read more about list_filter in the Django docs <https://docs.djangoproject.com/en/1.8/ref/contrib/admin/#django.contrib.admin.ModelAdmin.list_filter>`_.
 
+
+Customizing the layout 
+----------------------
+
+``edit_handler`` can be used on any Django models.Model classes just like it can be used on ``Page`` classes.
+
+To change the way your ``MyPageModel`` is displayed in the CreateView and the EditView, simply define an ``edit_handler`` or ``panels`` in your model.
+
+.. code-block:: python
+
+    class MyPageModel(models.Model):
+        first_name = models.CharField(max_length=100)
+        last_name = models.CharField(max_length=100)
+        address = models.TextField()
+        
+        panels = [
+            MultiFieldPanel([
+                FieldRowPanel([
+                    FieldPanel('first_name', classname='fn'),
+                    FieldPanel('last_name', classname='ln'),
+            ]),
+            FieldPanel('address', classname='custom1',))
+        ]
+
+Or alternatively:
+
+.. code-block:: python
+
+    class MyPageModel(models.Model):
+        first_name = models.CharField(max_length=100)
+        last_name = models.CharField(max_length=100)
+        address = models.TextField()
+        
+        custom_panels = [
+            MultiFieldPanel([
+                FieldRowPanel([
+                    FieldPanel('first_name', classname='fn'),
+                    FieldPanel('last_name', classname='ln'),
+            ]),
+            FieldPanel('address', classname='custom1',))
+        ]
+        edit_handler = ObjectList(custom_panels)
+        # or
+        edit_handler = TabbedInterface([ObjectList(custom_panels), ObjectList(...)])

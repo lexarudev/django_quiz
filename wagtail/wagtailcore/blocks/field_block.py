@@ -78,6 +78,11 @@ class FieldBlock(Block):
     def media(self):
         return self.field.widget.media
 
+    @property
+    def required(self):
+        # a FieldBlock is required iff its underlying form field is required
+        return self.field.required
+
     class Meta:
         # No icon specified here, because that depends on the purpose that the
         # block is being used for. Feel encouraged to specify an icon in your
@@ -127,6 +132,55 @@ class TextBlock(FieldBlock):
 
     class Meta:
         icon = "pilcrow"
+
+
+class FloatBlock(FieldBlock):
+
+    def __init__(self, required=True, max_value=None, min_value=None, *args,
+                 **kwargs):
+        self.field = forms.FloatField(
+            required=required,
+            max_value=max_value,
+            min_value=min_value,
+        )
+        super(FloatBlock, self).__init__(*args, **kwargs)
+
+    class Meta:
+        icon = "plus-inverse"
+
+
+class DecimalBlock(FieldBlock):
+
+    def __init__(self, required=True, max_value=None, min_value=None,
+                 max_digits=None, decimal_places=None, *args, **kwargs):
+        self.field = forms.DecimalField(
+            required=required,
+            max_value=max_value,
+            min_value=min_value,
+            max_digits=max_digits,
+            decimal_places=decimal_places,
+        )
+        super(DecimalBlock, self).__init__(*args, **kwargs)
+
+    class Meta:
+        icon = "plus-inverse"
+
+
+class RegexBlock(FieldBlock):
+
+    def __init__(self, regex, required=True, max_length=None, min_length=None,
+                 error_messages=None, *args, **kwargs):
+        self.field = forms.RegexField(
+            regex=regex,
+            required=required,
+            max_length=max_length,
+            min_length=min_length,
+            error_messages=error_messages,
+        )
+        super(RegexBlock, self).__init__(*args, **kwargs)
+
+    class Meta:
+        icon = "code"
 
 
 class URLBlock(FieldBlock):
@@ -230,6 +284,34 @@ class DateTimeBlock(FieldBlock):
         icon = "date"
 
 
+class EmailBlock(FieldBlock):
+    def __init__(self, required=True, help_text=None, **kwargs):
+        self.field = forms.EmailField(
+            required=required,
+            help_text=help_text,
+        )
+        super(EmailBlock, self).__init__(**kwargs)
+
+    class Meta:
+        icon = "mail"
+
+
+class IntegerBlock(FieldBlock):
+
+    def __init__(self, required=True, help_text=None, min_value=None,
+                 max_value=None, **kwargs):
+        self.field = forms.IntegerField(
+            required=required,
+            help_text=help_text,
+            min_value=min_value,
+            max_value=max_value
+        )
+        super(IntegerBlock, self).__init__(**kwargs)
+
+    class Meta:
+        icon = "plus-inverse"
+
+
 class ChoiceBlock(FieldBlock):
 
     choices = ()
@@ -288,10 +370,10 @@ class ChoiceBlock(FieldBlock):
                 # This is an optgroup, so look inside the group for options
                 for k2, v2 in v:
                     if value == k2 or text_value == force_text(k2):
-                        return [k, v2]
+                        return [force_text(k), force_text(v2)]
             else:
                 if value == k or text_value == force_text(k):
-                    return [v]
+                    return [force_text(v)]
         return []  # Value was not found in the list of choices
 
     class Meta:
@@ -378,16 +460,16 @@ class RawHTMLBlock(FieldBlock):
 class ChooserBlock(FieldBlock):
 
     def __init__(self, required=True, help_text=None, **kwargs):
-        self.required = required
-        self.help_text = help_text
+        self._required = required
+        self._help_text = help_text
         super(ChooserBlock, self).__init__(**kwargs)
 
     """Abstract superclass for fields that implement a chooser interface (page, image, snippet etc)"""
     @cached_property
     def field(self):
         return forms.ModelChoiceField(
-            queryset=self.target_model.objects.all(), widget=self.widget, required=self.required,
-            help_text=self.help_text)
+            queryset=self.target_model.objects.all(), widget=self.widget, required=self._required,
+            help_text=self._help_text)
 
     def to_python(self, value):
         # the incoming serialised value should be None or an ID
@@ -398,6 +480,14 @@ class ChooserBlock(FieldBlock):
                 return self.target_model.objects.get(pk=value)
             except self.target_model.DoesNotExist:
                 return None
+
+    def bulk_to_python(self, values):
+        """Return the model instances for the given list of primary keys.
+
+        The instances must be returned in the same order as the values and keep None values.
+        """
+        objects = self.target_model.objects.in_bulk(values)
+        return [objects.get(id) for id in values]  # Keeps the ordering the same as in values.
 
     def get_prep_value(self, value):
         # the native value (a model instance or None) should serialise to a PK or None
@@ -451,7 +541,7 @@ class PageChooserBlock(ChooserBlock):
         from wagtail.wagtailadmin.widgets import AdminPageChooser
         return AdminPageChooser(can_choose_root=self.can_choose_root)
 
-    def render_basic(self, value):
+    def render_basic(self, value, context=None):
         if value:
             return format_html('<a href="{0}">{1}</a>', value.url, value.title)
         else:
@@ -464,8 +554,10 @@ class PageChooserBlock(ChooserBlock):
 # Ensure that the blocks defined here get deconstructed as wagtailcore.blocks.FooBlock
 # rather than wagtailcore.blocks.field.FooBlock
 block_classes = [
-    FieldBlock, CharBlock, URLBlock, RichTextBlock, RawHTMLBlock, ChooserBlock, PageChooserBlock,
-    TextBlock, BooleanBlock, DateBlock, TimeBlock, DateTimeBlock, ChoiceBlock,
+    FieldBlock, CharBlock, URLBlock, RichTextBlock, RawHTMLBlock, ChooserBlock,
+    PageChooserBlock, TextBlock, BooleanBlock, DateBlock, TimeBlock,
+    DateTimeBlock, ChoiceBlock, EmailBlock, IntegerBlock, FloatBlock,
+    DecimalBlock, RegexBlock
 ]
 DECONSTRUCT_ALIASES = {
     cls: 'wagtail.wagtailcore.blocks.%s' % cls.__name__

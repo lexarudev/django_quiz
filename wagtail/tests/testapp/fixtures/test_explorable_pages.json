@@ -80,7 +80,7 @@
         "depth": 2,
         "content_type": ["tests", "eventpage"],
         "path": "00010002",
-        "url_path": "/home/",
+        "url_path": "/example-home/",
         "slug": "example-home"
     }
 },
@@ -107,7 +107,7 @@
         "depth": 3,
         "content_type": ["tests", "eventpage"],
         "path": "000100020001",
-        "url_path": "/home/content/",
+        "url_path": "/example-home/content/",
         "slug": "content",
         "owner": 1
     }
@@ -135,7 +135,7 @@
         "depth": 4,
         "content_type": ["tests", "eventpage"],
         "path": "0001000200010001",
-        "url_path": "/home/content/page-1/",
+        "url_path": "/example-home/content/page-1/",
         "slug": "page-1",
         "owner": 1
     }
@@ -163,7 +163,7 @@
         "depth": 4,
         "content_type": ["tests", "eventpage"],
         "path": "0001000200010002",
-        "url_path": "/home/content/page-2/",
+        "url_path": "/example-home/content/page-2/",
         "slug": "page-2",
         "owner": 1
     }
@@ -191,7 +191,7 @@
         "depth": 3,
         "content_type": ["tests", "eventpage"],
         "path": "000100020002",
-        "url_path": "/home/other-content/",
+        "url_path": "/example-home/other-content/",
         "slug": "other-content",
         "owner": 1
     }
@@ -219,7 +219,7 @@
         "depth": 5,
         "content_type": ["tests", "eventpage"],
         "path": "00010002000100020001",
-        "url_path": "/home/content/page-2/child-1/",
+        "url_path": "/example-home/content/page-2/child-1/",
         "slug": "child-1",
         "owner": 1
     }
@@ -240,7 +240,7 @@
     "pk": 10,
     "model": "wagtailcore.page",
     "fields": {
-        "title": "Welcome to example.com Again!",
+        "title": "Welcome to example2.com!",
         "numchild": 0,
         "show_in_menus": false,
         "live": true,

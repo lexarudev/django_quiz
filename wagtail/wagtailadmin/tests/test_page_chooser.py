@@ -228,7 +228,7 @@ class TestChooserBrowseWithChoosablePageRestrictions(TestCase, WagtailTestUtils)
         self.assertEqual(len(response.context['pages']), Page.get_first_root_node().get_children().count())
         # Confirm that the superuser can see all the homepages, which no other user in the fixture can do.
         self.assertSequenceEqual(
-            ['Welcome to testserver!', 'Welcome to example.com!', 'Welcome to example.com Again!'],
+            ['Welcome to testserver!', 'Welcome to example.com!', 'Welcome to example2.com!'],
             [page.title for page in response.context['pages']]
         )
 

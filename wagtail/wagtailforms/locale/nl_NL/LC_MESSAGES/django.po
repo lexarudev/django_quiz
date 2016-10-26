@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Wagtail\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-05-18 21:37+0000\n"
-"PO-Revision-Date: 2016-05-11 20:34+0000\n"
+"POT-Creation-Date: 2016-08-01 13:25+0000\n"
+"PO-Revision-Date: 2016-08-01 13:29+0000\n"
 "Last-Translator: Matt Westcott <matthew@torchbox.com>\n"
 "Language-Team: Dutch (Netherlands) (http://www.transifex.com/torchbox/"
 "wagtail/language/nl_NL/)\n"
@@ -97,9 +97,6 @@ msgstr "hulptekst"
 msgid "to address"
 msgstr "e-mailadres ontvanger"
 
-msgid "Optional - form submissions will be emailed to this address"
-msgstr "Optioneel - inzendingen worden per e-mail verstuurd naar dit adres"
-
 msgid "from address"
 msgstr "e-mail afzender"
 
@@ -154,6 +151,9 @@ msgstr "Inzenddatum"
 
 msgid "Actions"
 msgstr "Acties"
+
+msgid "delete"
+msgstr "verwijder"
 
 msgid "No form pages have been created."
 msgstr "Er zijn nog geen pagina's met een formulier aangemaakt."

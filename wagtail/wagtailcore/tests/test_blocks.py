@@ -2,16 +2,25 @@
 from __future__ import absolute_import, unicode_literals
 
 import base64
+import collections
+import json
 import unittest
+import warnings
+from decimal import Decimal
 
+# non-standard import name for ugettext_lazy, to prevent strings from being picked up for translation
 from django import forms
 from django.core.exceptions import ValidationError
 from django.forms.utils import ErrorList
+from django.template.loader import render_to_string
 from django.test import SimpleTestCase, TestCase
 from django.utils.html import format_html
 from django.utils.safestring import SafeData, mark_safe
+from django.utils.translation import ugettext_lazy as __
 
+from wagtail.tests.testapp.blocks import LinkBlock as CustomLinkBlock
 from wagtail.tests.testapp.blocks import SectionBlock
+from wagtail.utils.deprecation import RemovedInWagtail18Warning
 from wagtail.wagtailcore import blocks
 from wagtail.wagtailcore.models import Page
 from wagtail.wagtailcore.rich_text import RichText
@@ -28,12 +37,44 @@ class FooStreamBlock(blocks.StreamBlock):
         return value
 
 
+class LegacyRenderMethodBlock(blocks.CharBlock):
+    """
+    A block with a render method that doesn't accept a 'context' kwarg.
+    Support for these will be dropped in Wagtail 1.8
+    """
+    def render(self, value):
+        return str(value).upper()
+
+
+class LegacyRenderBasicMethodBlock(blocks.CharBlock):
+    """
+    A block with a render_basic method that doesn't accept a 'context' kwarg.
+    Support for these will be dropped in Wagtail 1.8
+    """
+    def render_basic(self, value):
+        return str(value).upper()
+
+
 class TestFieldBlock(unittest.TestCase):
     def test_charfield_render(self):
         block = blocks.CharBlock()
         html = block.render("Hello world!")
 
         self.assertEqual(html, "Hello world!")
+
+    def test_charfield_render_with_template(self):
+        block = blocks.CharBlock(template='tests/blocks/heading_block.html')
+        html = block.render("Hello world!")
+
+        self.assertEqual(html, '<h1>Hello world!</h1>')
+
+    def test_charfield_render_with_template_with_extra_context(self):
+        block = blocks.CharBlock(template='tests/blocks/heading_block.html')
+        html = block.render("Bonjour le monde!", context={
+            'language': 'fr',
+        })
+
+        self.assertEqual(html, '<h1 lang="fr">Bonjour le monde!</h1>')
 
     def test_charfield_render_form(self):
         block = blocks.CharBlock()
@@ -144,6 +185,193 @@ class TestFieldBlock(unittest.TestCase):
         block = CalenderBlock()
         self.assertIn('pretty.css', ''.join(block.all_media().render_css()))
         self.assertIn('animations.js', ''.join(block.all_media().render_js()))
+
+    def test_legacy_render_basic(self):
+        """
+        LegacyRenderBasicMethodBlock defines a render_basic method that doesn't accept
+        a 'context' kwarg. Calling 'render' should gracefully handle this and return
+        the result of calling render_basic(value) (i.e. without passing context), but
+        generate a RemovedInWagtail18Warning.
+        """
+        block = LegacyRenderBasicMethodBlock()
+
+        with warnings.catch_warnings(record=True) as ws:
+            warnings.simplefilter('always')
+
+            result = block.render('hello')
+
+        self.assertEqual(result, 'HELLO')
+        self.assertEqual(len(ws), 1)
+        self.assertIs(ws[0].category, RemovedInWagtail18Warning)
+
+
+class TestIntegerBlock(unittest.TestCase):
+    def test_type(self):
+        block = blocks.IntegerBlock()
+        digit = block.value_from_form(1234)
+
+        self.assertEqual(type(digit), int)
+
+    def test_render(self):
+        block = blocks.IntegerBlock()
+        digit = block.value_from_form(1234)
+
+        self.assertEqual(digit, 1234)
+
+    def test_render_required_error(self):
+        block = blocks.IntegerBlock()
+
+        with self.assertRaises(ValidationError):
+            block.clean("")
+
+    def test_render_max_value_validation(self):
+        block = blocks.IntegerBlock(max_value=20)
+
+        with self.assertRaises(ValidationError):
+            block.clean(25)
+
+    def test_render_min_value_validation(self):
+        block = blocks.IntegerBlock(min_value=20)
+
+        with self.assertRaises(ValidationError):
+            block.clean(10)
+
+
+class TestEmailBlock(unittest.TestCase):
+    def test_render(self):
+        block = blocks.EmailBlock()
+        email = block.render("example@email.com")
+
+        self.assertEqual(email, "example@email.com")
+
+    def test_render_required_error(self):
+        block = blocks.EmailBlock()
+
+        with self.assertRaises(ValidationError):
+            block.clean("")
+
+    def test_format_validation(self):
+        block = blocks.EmailBlock()
+
+        with self.assertRaises(ValidationError):
+            block.clean("example.email.com")
+
+
+class TestFloatBlock(TestCase):
+    def test_type(self):
+        block = blocks.FloatBlock()
+        block_val = block.value_from_form(float(1.63))
+        self.assertEqual(type(block_val), float)
+
+    def test_render(self):
+        block = blocks.FloatBlock()
+        test_val = float(1.63)
+        block_val = block.value_from_form(test_val)
+        self.assertEqual(block_val, test_val)
+
+    def test_raises_required_error(self):
+        block = blocks.FloatBlock()
+
+        with self.assertRaises(ValidationError):
+            block.clean("")
+
+    def test_raises_max_value_validation_error(self):
+        block = blocks.FloatBlock(max_value=20)
+
+        with self.assertRaises(ValidationError):
+            block.clean('20.01')
+
+    def test_raises_min_value_validation_error(self):
+        block = blocks.FloatBlock(min_value=20)
+
+        with self.assertRaises(ValidationError):
+            block.clean('19.99')
+
+
+class TestDecimalBlock(TestCase):
+    def test_type(self):
+        block = blocks.DecimalBlock()
+        block_val = block.value_from_form(Decimal('1.63'))
+        self.assertEqual(type(block_val), Decimal)
+
+    def test_render(self):
+        block = blocks.DecimalBlock()
+        test_val = Decimal(1.63)
+        block_val = block.value_from_form(test_val)
+
+        self.assertEqual(block_val, test_val)
+
+    def test_raises_required_error(self):
+        block = blocks.DecimalBlock()
+
+        with self.assertRaises(ValidationError):
+            block.clean("")
+
+    def test_raises_max_value_validation_error(self):
+        block = blocks.DecimalBlock(max_value=20)
+
+        with self.assertRaises(ValidationError):
+            block.clean('20.01')
+
+    def test_raises_min_value_validation_error(self):
+        block = blocks.DecimalBlock(min_value=20)
+
+        with self.assertRaises(ValidationError):
+            block.clean('19.99')
+
+
+class TestRegexBlock(TestCase):
+
+    def test_render(self):
+        block = blocks.RegexBlock(regex=r'^[0-9]{3}$')
+        test_val = '123'
+        block_val = block.value_from_form(test_val)
+
+        self.assertEqual(block_val, test_val)
+
+    def test_raises_required_error(self):
+        block = blocks.RegexBlock(regex=r'^[0-9]{3}$')
+
+        with self.assertRaises(ValidationError) as context:
+            block.clean("")
+
+        self.assertIn('This field is required.', context.exception.messages)
+
+    def test_raises_custom_required_error(self):
+        test_message = 'Oops, you missed a bit.'
+        block = blocks.RegexBlock(regex=r'^[0-9]{3}$', error_messages={
+            'required': test_message,
+        })
+
+        with self.assertRaises(ValidationError) as context:
+            block.clean("")
+
+        self.assertIn(test_message, context.exception.messages)
+
+    def test_raises_validation_error(self):
+        block = blocks.RegexBlock(regex=r'^[0-9]{3}$')
+
+        with self.assertRaises(ValidationError) as context:
+            block.clean("[/]")
+
+        self.assertIn('Enter a valid value.', context.exception.messages)
+
+    def test_raises_custom_error_message(self):
+        test_message = 'Not a valid library card number.'
+        block = blocks.RegexBlock(regex=r'^[0-9]{3}$', error_messages={
+            'invalid': test_message
+        })
+
+        with self.assertRaises(ValidationError) as context:
+            block.clean("[/]")
+
+        self.assertIn(test_message, context.exception.messages)
+
+        html = block.render_form(
+            "[/]",
+            errors=ErrorList([ValidationError(test_message)]))
+
+        self.assertIn(test_message, html)
 
 
 class TestRichTextBlock(TestCase):
@@ -382,6 +610,34 @@ class TestChoiceBlock(unittest.TestCase):
             ('two', 'Two'),
         ])
         self.assertEqual(block.get_searchable_content('three'), [])
+
+    def test_searchable_content_with_lazy_translation(self):
+        block = blocks.ChoiceBlock(choices=[
+            ('choice-1', __("Choice 1")),
+            ('choice-2', __("Choice 2")),
+        ])
+        result = block.get_searchable_content("choice-1")
+        # result must survive JSON (de)serialisation, which is not the case for
+        # lazy translation objects
+        result = json.loads(json.dumps(result))
+        self.assertEqual(result, ["Choice 1"])
+
+    def test_optgroup_searchable_content_with_lazy_translation(self):
+        block = blocks.ChoiceBlock(choices=[
+            (__('Section 1'), [
+                ('1-1', __("Block 1")),
+                ('1-2', __("Block 2")),
+            ]),
+            (__('Section 2'), [
+                ('2-1', __("Block 1")),
+                ('2-2', __("Block 2")),
+            ]),
+        ])
+        result = block.get_searchable_content("2-2")
+        # result must survive JSON (de)serialisation, which is not the case for
+        # lazy translation objects
+        result = json.loads(json.dumps(result))
+        self.assertEqual(result, ["Section 2", "Block 2"])
 
 
 class TestRawHTMLBlock(unittest.TestCase):
@@ -654,10 +910,30 @@ class TestStructBlock(SimpleTestCase):
         expected = '<div class="rich-text"><b>world</b></div>'
         self.assertEqual(str(body_bound_block), expected)
 
-    def test_render_form(self):
+    def test_get_form_context(self):
         class LinkBlock(blocks.StructBlock):
             title = blocks.CharBlock()
             link = blocks.URLBlock()
+
+        block = LinkBlock()
+        context = block.get_form_context(block.to_python({
+            'title': "Wagtail site",
+            'link': 'http://www.wagtail.io',
+        }), prefix='mylink')
+
+        self.assertTrue(isinstance(context['children'], collections.OrderedDict))
+        self.assertEqual(len(context['children']), 2)
+        self.assertTrue(isinstance(context['children']['title'], blocks.BoundBlock))
+        self.assertEqual(context['children']['title'].value, "Wagtail site")
+        self.assertTrue(isinstance(context['children']['link'], blocks.BoundBlock))
+        self.assertEqual(context['children']['link'].value, 'http://www.wagtail.io')
+        self.assertEqual(context['block_definition'], block)
+        self.assertEqual(context['prefix'], 'mylink')
+
+    def test_render_form(self):
+        class LinkBlock(blocks.StructBlock):
+            title = blocks.CharBlock(required=False)
+            link = blocks.URLBlock(required=False)
 
         block = LinkBlock()
         html = block.render_form(block.to_python({
@@ -667,6 +943,7 @@ class TestStructBlock(SimpleTestCase):
 
         self.assertIn('<div class="struct-block">', html)
         self.assertIn('<div class="field char_field widget-text_input fieldname-title">', html)
+        self.assertIn('<label for="mylink-title">Title:</label>', html)
         self.assertIn(
             '<input id="mylink-title" name="mylink-title" placeholder="Title" type="text" value="Wagtail site" />', html
         )
@@ -678,6 +955,20 @@ class TestStructBlock(SimpleTestCase):
             ),
             html
         )
+        self.assertNotIn('<li class="required">', html)
+
+    def test_render_required_field_indicator(self):
+        class LinkBlock(blocks.StructBlock):
+            title = blocks.CharBlock()
+            link = blocks.URLBlock(required=True)
+
+        block = LinkBlock()
+        html = block.render_form(block.to_python({
+            'title': "Wagtail site",
+            'link': 'http://www.wagtail.io',
+        }), prefix='mylink')
+
+        self.assertIn('<li class="required">', html)
 
     def test_render_form_unknown_field(self):
         class LinkBlock(blocks.StructBlock):
@@ -849,6 +1140,31 @@ class TestStructBlock(SimpleTestCase):
         result = block.render(value)
         self.assertEqual(result, """<h1>Hello</h1><div class="rich-text"><i>italic</i> world</div>""")
 
+    def test_render_block_with_extra_context(self):
+        block = SectionBlock()
+        value = block.to_python({'title': 'Bonjour', 'body': 'monde <i>italique</i>'})
+        result = block.render(value, context={'language': 'fr'})
+        self.assertEqual(result, """<h1 lang="fr">Bonjour</h1><div class="rich-text">monde <i>italique</i></div>""")
+
+    def test_render_structvalue(self):
+        """
+        The string representation of a StructValue should use the block's template
+        """
+        block = SectionBlock()
+        value = block.to_python({'title': 'Hello', 'body': '<i>italic</i> world'})
+        result = str(value)
+        self.assertEqual(result, """<h1>Hello</h1><div class="rich-text"><i>italic</i> world</div>""")
+
+        # value.render_as_block() should be equivalent to str(value)
+        result = value.render_as_block()
+        self.assertEqual(result, """<h1>Hello</h1><div class="rich-text"><i>italic</i> world</div>""")
+
+    def test_render_structvalue_with_extra_context(self):
+        block = SectionBlock()
+        value = block.to_python({'title': 'Bonjour', 'body': 'monde <i>italique</i>'})
+        result = value.render_as_block(context={'language': 'fr'})
+        self.assertEqual(result, """<h1 lang="fr">Bonjour</h1><div class="rich-text">monde <i>italique</i></div>""")
+
 
 class TestListBlock(unittest.TestCase):
     def test_initialise_with_class(self):
@@ -891,6 +1207,53 @@ class TestListBlock(unittest.TestCase):
 
         self.assertIn('<li>', html)
         self.assertIn('</li>', html)
+
+    def test_render_calls_block_render_on_children(self):
+        """
+        The default rendering of a ListBlock should invoke the block's render method
+        on each child, rather than just outputting the child value as a string.
+        """
+        block = blocks.ListBlock(
+            blocks.CharBlock(template='tests/blocks/heading_block.html')
+        )
+        html = block.render(["Hello world!", "Goodbye world!"])
+
+        self.assertIn('<h1>Hello world!</h1>', html)
+        self.assertIn('<h1>Goodbye world!</h1>', html)
+
+    def test_render_passes_context_to_children(self):
+        """
+        Template context passed to the render method should be passed on
+        to the render method of the child block.
+        """
+        block = blocks.ListBlock(
+            blocks.CharBlock(template='tests/blocks/heading_block.html')
+        )
+        html = block.render(["Bonjour le monde!", "Au revoir le monde!"], context={
+            'language': 'fr',
+        })
+
+        self.assertIn('<h1 lang="fr">Bonjour le monde!</h1>', html)
+        self.assertIn('<h1 lang="fr">Au revoir le monde!</h1>', html)
+
+    def test_child_with_legacy_render(self):
+        """
+        If the child block has a legacy 'render' method that doesn't accept a 'context'
+        kwarg, ListBlock.render should use the result of calling render(child_value), but
+        generate a RemovedInWagtail18Warning.
+        """
+        block = blocks.ListBlock(LegacyRenderBasicMethodBlock())
+
+        with warnings.catch_warnings(record=True) as ws:
+            warnings.simplefilter('always')
+
+            result = block.render(['hello', 'world'])
+
+        self.assertIn('<li>HELLO</li>', result)
+        self.assertIn('<li>WORLD</li>', result)
+        self.assertEqual(len(ws), 2)
+        self.assertIs(ws[0].category, RemovedInWagtail18Warning)
+        self.assertIs(ws[1].category, RemovedInWagtail18Warning)
 
     def render_form(self):
         class LinkBlock(blocks.StructBlock):
@@ -936,8 +1299,8 @@ class TestListBlock(unittest.TestCase):
     def test_render_form_labels(self):
         html = self.render_form()
 
-        self.assertIn('<label for="links-0-value-title">Title</label>', html)
-        self.assertIn('<label for="links-0-value-link">Link</label>', html)
+        self.assertIn('<label for="links-0-value-title">Title:</label>', html)
+        self.assertIn('<label for="links-0-value-link">Link:</label>', html)
 
     def test_render_form_values(self):
         html = self.render_form()
@@ -1233,6 +1596,117 @@ class TestStreamBlock(SimpleTestCase):
         self.assertNotIn('foo', html)
         self.assertNotIn('Hello', html)
         self.assertIn('<div class="block-paragraph"><div class="rich-text">My first paragraph</div></div>', html)
+
+    def test_render_calls_block_render_on_children(self):
+        """
+        The default rendering of a StreamBlock should invoke the block's render method
+        on each child, rather than just outputting the child value as a string.
+        """
+        block = blocks.StreamBlock([
+            ('heading', blocks.CharBlock(template='tests/blocks/heading_block.html')),
+            ('paragraph', blocks.CharBlock()),
+        ])
+        value = block.to_python([
+            {'type': 'heading', 'value': 'Hello'}
+        ])
+        html = block.render(value)
+        self.assertIn('<div class="block-heading"><h1>Hello</h1></div>', html)
+
+        # calling render_as_block() on value (a StreamValue instance)
+        # should be equivalent to block.render(value)
+        html = value.render_as_block()
+        self.assertIn('<div class="block-heading"><h1>Hello</h1></div>', html)
+
+    def test_render_child_with_legacy_render_method(self):
+        """
+        StreamBlock should gracefully handle child blocks with a legacy 'render'
+        method (one which doesn't accept a 'context' kwarg), but output a
+        RemovedInWagtail18Warning
+        """
+        block = blocks.StreamBlock([
+            ('heading', LegacyRenderMethodBlock()),
+            ('paragraph', blocks.CharBlock()),
+        ])
+        value = block.to_python([
+            {'type': 'heading', 'value': 'Hello'}
+        ])
+        with warnings.catch_warnings(record=True) as ws:
+            warnings.simplefilter('always')
+
+            result = block.render(value)
+
+        self.assertIn('<div class="block-heading">HELLO</div>', result)
+        self.assertEqual(len(ws), 1)
+        self.assertIs(ws[0].category, RemovedInWagtail18Warning)
+
+        # calling render_as_block() on value (a StreamValue instance)
+        # should be equivalent to block.render(value)
+        with warnings.catch_warnings(record=True) as ws:
+            warnings.simplefilter('always')
+
+            result = value.render_as_block()
+
+        self.assertIn('<div class="block-heading">HELLO</div>', result)
+        self.assertEqual(len(ws), 1)
+        self.assertIs(ws[0].category, RemovedInWagtail18Warning)
+
+    def test_render_passes_context_to_children(self):
+        block = blocks.StreamBlock([
+            ('heading', blocks.CharBlock(template='tests/blocks/heading_block.html')),
+            ('paragraph', blocks.CharBlock()),
+        ])
+        value = block.to_python([
+            {'type': 'heading', 'value': 'Bonjour'}
+        ])
+        html = block.render(value, context={
+            'language': 'fr',
+        })
+        self.assertIn('<div class="block-heading"><h1 lang="fr">Bonjour</h1></div>', html)
+
+        # calling render_as_block(context=foo) on value (a StreamValue instance)
+        # should be equivalent to block.render(value, context=foo)
+        html = value.render_as_block(context={
+            'language': 'fr',
+        })
+        self.assertIn('<div class="block-heading"><h1 lang="fr">Bonjour</h1></div>', html)
+
+    def test_render_on_stream_child_uses_child_template(self):
+        """
+        Accessing a child element of the stream (giving a StreamChild object) and rendering it
+        should use the block template, not just render the value's string representation
+        """
+        block = blocks.StreamBlock([
+            ('heading', blocks.CharBlock(template='tests/blocks/heading_block.html')),
+            ('paragraph', blocks.CharBlock()),
+        ])
+        value = block.to_python([
+            {'type': 'heading', 'value': 'Hello'}
+        ])
+        html = value[0].render()
+        self.assertEqual('<h1>Hello</h1>', html)
+
+        # StreamChild.__str__ should do the same
+        html = str(value[0])
+        self.assertEqual('<h1>Hello</h1>', html)
+
+        # and so should StreamChild.render_as_block
+        html = value[0].render_as_block()
+        self.assertEqual('<h1>Hello</h1>', html)
+
+    def test_can_pass_context_to_stream_child_template(self):
+        block = blocks.StreamBlock([
+            ('heading', blocks.CharBlock(template='tests/blocks/heading_block.html')),
+            ('paragraph', blocks.CharBlock()),
+        ])
+        value = block.to_python([
+            {'type': 'heading', 'value': 'Bonjour'}
+        ])
+        html = value[0].render(context={'language': 'fr'})
+        self.assertEqual('<h1 lang="fr">Bonjour</h1>', html)
+
+        # the same functionality should be available through the alias `render_as_block`
+        html = value[0].render_as_block(context={'language': 'fr'})
+        self.assertEqual('<h1 lang="fr">Bonjour</h1>', html)
 
     def render_form(self):
         class ArticleBlock(blocks.StreamBlock):
@@ -1745,10 +2219,130 @@ class TestSystemCheck(TestCase):
 
 class TestTemplateRendering(TestCase):
     def test_render_with_custom_context(self):
-        from wagtail.tests.testapp.blocks import LinkBlock
-
-        block = LinkBlock()
+        block = CustomLinkBlock()
         value = block.to_python({'title': 'Torchbox', 'url': 'http://torchbox.com/'})
         result = block.render(value)
 
         self.assertEqual(result, '<a href="http://torchbox.com/" class="important">Torchbox</a>')
+
+    def test_render_with_custom_form_context(self):
+        block = CustomLinkBlock()
+        value = block.to_python({'title': 'Torchbox', 'url': 'http://torchbox.com/'})
+        result = block.render_form(value, prefix='my-link-block')
+
+        self.assertIn('data-prefix="my-link-block"', result)
+        self.assertIn('<p>Hello from get_form_context!</p>', result)
+
+
+class TestIncludeBlockTag(TestCase):
+    def test_include_block_tag_with_boundblock(self):
+        """
+        The include_block tag should be able to render a BoundBlock's template
+        while keeping the parent template's context
+        """
+        block = blocks.CharBlock(template='tests/blocks/heading_block.html')
+        bound_block = block.bind('bonjour')
+
+        result = render_to_string('tests/blocks/include_block_test.html', {
+            'test_block': bound_block,
+            'language': 'fr',
+        })
+        self.assertIn('<body><h1 lang="fr">bonjour</h1></body>', result)
+
+    def test_include_block_tag_with_structvalue(self):
+        """
+        The include_block tag should be able to render a StructValue's template
+        while keeping the parent template's context
+        """
+        block = SectionBlock()
+        struct_value = block.to_python({'title': 'Bonjour', 'body': 'monde <i>italique</i>'})
+
+        result = render_to_string('tests/blocks/include_block_test.html', {
+            'test_block': struct_value,
+            'language': 'fr',
+        })
+
+        self.assertIn(
+            """<body><h1 lang="fr">Bonjour</h1><div class="rich-text">monde <i>italique</i></div></body>""",
+            result
+        )
+
+    def test_include_block_tag_with_streamvalue(self):
+        """
+        The include_block tag should be able to render a StreamValue's template
+        while keeping the parent template's context
+        """
+        block = blocks.StreamBlock([
+            ('heading', blocks.CharBlock(template='tests/blocks/heading_block.html')),
+            ('paragraph', blocks.CharBlock()),
+        ], template='tests/blocks/stream_with_language.html')
+
+        stream_value = block.to_python([
+            {'type': 'heading', 'value': 'Bonjour'}
+        ])
+
+        result = render_to_string('tests/blocks/include_block_test.html', {
+            'test_block': stream_value,
+            'language': 'fr',
+        })
+
+        self.assertIn('<div class="heading" lang="fr"><h1 lang="fr">Bonjour</h1></div>', result)
+
+    def test_include_block_tag_with_plain_value(self):
+        """
+        The include_block tag should be able to render a value without a render_as_block method
+        by just rendering it as a string
+        """
+        result = render_to_string('tests/blocks/include_block_test.html', {
+            'test_block': 42,
+        })
+
+        self.assertIn('<body>42</body>', result)
+
+    def test_include_block_tag_with_filtered_value(self):
+        """
+        The block parameter on include_block tag should support complex values including filters,
+        e.g. {% include_block foo|default:123 %}
+        """
+        block = blocks.CharBlock(template='tests/blocks/heading_block.html')
+        bound_block = block.bind('bonjour')
+
+        result = render_to_string('tests/blocks/include_block_test_with_filter.html', {
+            'test_block': bound_block,
+            'language': 'fr',
+        })
+        self.assertIn('<body><h1 lang="fr">bonjour</h1></body>', result)
+
+        result = render_to_string('tests/blocks/include_block_test_with_filter.html', {
+            'test_block': None,
+            'language': 'fr',
+        })
+        self.assertIn('<body>999</body>', result)
+
+    def test_include_block_tag_with_extra_context(self):
+        """
+        Test that it's possible to pass extra context on an include_block tag using
+        {% include_block foo with classname="bar" %}
+        """
+        block = blocks.CharBlock(template='tests/blocks/heading_block.html')
+        bound_block = block.bind('bonjour')
+
+        result = render_to_string('tests/blocks/include_block_with_test.html', {
+            'test_block': bound_block,
+            'language': 'fr',
+        })
+        self.assertIn('<body><h1 lang="fr" class="important">bonjour</h1></body>', result)
+
+    def test_include_block_tag_with_only_flag(self):
+        """
+        A tag such as {% include_block foo with classname="bar" only %}
+        should not inherit the parent context
+        """
+        block = blocks.CharBlock(template='tests/blocks/heading_block.html')
+        bound_block = block.bind('bonjour')
+
+        result = render_to_string('tests/blocks/include_block_only_test.html', {
+            'test_block': bound_block,
+            'language': 'fr',
+        })
+        self.assertIn('<body><h1 class="important">bonjour</h1></body>', result)
