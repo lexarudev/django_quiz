@@ -9,8 +9,9 @@
 # Andrey Avdey <talkerbox@live.com>, 2016
 # Daniil <fleepd@gmail.com>, 2015
 # Eugene MechanisM <eugene@mechanism.pro>, 2014-2016
-# HNKNTA <hnknta@gmail.com>, 2014
-# HNKNTA <hnknta@gmail.com>, 2014
+# Eugene MechanisM <eugene@mechanism.pro>, 2016
+# Никита Викторович <hnknta@gmail.com>, 2014
+# Никита Викторович <hnknta@gmail.com>, 2014
 # Matt Westcott <matthew@torchbox.com>, 2015
 # Mikalai Radchuk <radchuk.m@gmail.com>, 2016
 # Sergey Komarov <sjkomarov@gmail.com>, 2014
@@ -19,9 +20,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Wagtail\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-08-01 13:25+0000\n"
-"PO-Revision-Date: 2016-08-01 14:00+0000\n"
-"Last-Translator: Andrey Avdey <talkerbox@live.com>\n"
+"POT-Creation-Date: 2016-10-05 16:37+0100\n"
+"PO-Revision-Date: 2016-10-05 17:04+0000\n"
+"Last-Translator: Eugene MechanisM <eugene@mechanism.pro>\n"
 "Language-Team: Russian (http://www.transifex.com/torchbox/wagtail/language/"
 "ru/)\n"
 "MIME-Version: 1.0\n"
@@ -141,11 +142,17 @@ msgid ""
 msgstr ""
 "Этот слаг уже используется в контексте своей родительской страницы \"%s\""
 
+msgid "Visibility"
+msgstr "Видимость"
+
 msgid "Public"
 msgstr "Публично"
 
 msgid "Private, accessible with the following password"
 msgstr "Приватно, доступно со следующим паролем"
+
+msgid "Password"
+msgstr "Пароль"
 
 msgid "This field is required."
 msgstr "Требуется заполнить это поле."
@@ -622,6 +629,32 @@ msgstr "Отменить публикацию"
 msgid "Are you sure you want to unpublish this page?"
 msgstr "Вы уверены, что хотите отменить публикацию этой страницы?"
 
+#, python-format
+msgid ""
+"\n"
+"                    This page has one subpage. Unpublish this too\n"
+"                "
+msgid_plural ""
+"\n"
+"                    This page has %(live_descendant_count)s subpages. "
+"Unpublish these too\n"
+"                "
+msgstr[0] ""
+"\n"
+"У этой страницы одна дочерняя страница. Распубликуйте её тоже."
+msgstr[1] ""
+"\n"
+"У этой страницы %(live_descendant_count)s дочерних страниц. Распубликуйте их "
+"тоже."
+msgstr[2] ""
+"\n"
+"У этой страницы %(live_descendant_count)s дочерних страниц. Распубликуйте их "
+"тоже."
+msgstr[3] ""
+"\n"
+"У этой страницы %(live_descendant_count)s дочерних страниц. Распубликуйте их "
+"тоже."
+
 msgid "Yes, unpublish it"
 msgstr "Да, отменить публикацию"
 
@@ -967,6 +1000,9 @@ msgstr[3] "Использовано %(useage_count)s раз"
 
 msgid "Edit your account"
 msgstr "Редактировать ваш аккаунт"
+
+msgid "Account settings"
+msgstr "Настройки аккаунта"
 
 msgid "Log out"
 msgstr "Выйти"

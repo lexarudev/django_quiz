@@ -1,14 +1,15 @@
 from __future__ import absolute_import, unicode_literals
 
 import hashlib
+import inspect
 import os.path
+import warnings
 from collections import OrderedDict
 from contextlib import contextmanager
 
 import django
 from django.conf import settings
 from django.core import checks
-from django.core.exceptions import ImproperlyConfigured
 from django.core.files import File
 from django.core.urlresolvers import reverse
 from django.db import models
@@ -25,6 +26,7 @@ from taggit.managers import TaggableManager
 from unidecode import unidecode
 from willow.image import Image as WillowImage
 
+from wagtail.utils.deprecation import RemovedInWagtail19Warning, RemovedInWagtail110Warning
 from wagtail.wagtailadmin.utils import get_object_usage
 from wagtail.wagtailcore import hooks
 from wagtail.wagtailcore.models import CollectionMember
@@ -43,6 +45,14 @@ class SourceImageIOError(IOError):
 
 class ImageQuerySet(SearchableQuerySetMixin, models.QuerySet):
     pass
+
+
+def get_image_model():
+    warnings.warn("wagtail.wagtailimages.models.get_image_model "
+                  "has been moved to wagtail.wagtailimages.get_image_model",
+                  RemovedInWagtail110Warning)
+    from wagtail.wagtailimages import get_image_model
+    return get_image_model()
 
 
 def get_upload_to(instance, filename):
@@ -125,10 +135,14 @@ class AbstractImage(CollectionMember, index.Indexed, models.Model):
 
         # Truncate filename so it fits in the 100 character limit
         # https://code.djangoproject.com/ticket/9893
-        while len(os.path.join(folder_name, filename)) >= 95:
-            prefix, dot, extension = filename.rpartition('.')
-            filename = prefix[:-1] + dot + extension
-        return os.path.join(folder_name, filename)
+        full_path = os.path.join(folder_name, filename)
+        if len(full_path) >= 95:
+            chars_to_trim = len(full_path) - 94
+            prefix, extension = os.path.splitext(filename)
+            filename = prefix[:-chars_to_trim] + extension
+            full_path = os.path.join(folder_name, filename)
+
+        return full_path
 
     def get_usage(self):
         return get_object_usage(self)
@@ -352,26 +366,6 @@ def image_delete(sender, instance, **kwargs):
     instance.file.delete(False)
 
 
-def get_image_model():
-    from django.conf import settings
-    from django.apps import apps
-
-    try:
-        app_label, model_name = settings.WAGTAILIMAGES_IMAGE_MODEL.split('.')
-    except AttributeError:
-        return Image
-    except ValueError:
-        raise ImproperlyConfigured("WAGTAILIMAGES_IMAGE_MODEL must be of the form 'app_label.model_name'")
-
-    image_model = apps.get_model(app_label, model_name)
-    if image_model is None:
-        raise ImproperlyConfigured(
-            "WAGTAILIMAGES_IMAGE_MODEL refers to model '%s' that has not been installed" %
-            settings.WAGTAILIMAGES_IMAGE_MODEL
-        )
-    return image_model
-
-
 class Filter(models.Model):
     """
     Represents one or more operations that can be applied to an Image to produce a rendition
@@ -406,28 +400,59 @@ class Filter(models.Model):
             # Fix orientation of image
             willow = willow.auto_orient()
 
+            env = {
+                'original-format': original_format,
+            }
             for operation in self.operations:
-                willow = operation.run(willow, image) or willow
+                # Check that the operation can take the "env" argument
+                try:
+                    inspect.getcallargs(operation.run, willow, image, env)
+                    accepts_env = True
+                except TypeError:
+                    # Check that the paramters fit the old style, so we don't
+                    # raise a warning if there is a coding error
+                    inspect.getcallargs(operation.run, willow, image)
+                    accepts_env = False
+                    warnings.warn("ImageOperation run methods should take 4 "
+                                  "arguments. %d.run only takes 3.",
+                                  RemovedInWagtail19Warning)
 
-            if original_format == 'jpeg':
+                # Call operation
+                if accepts_env:
+                    willow = operation.run(willow, image, env) or willow
+                else:
+                    willow = operation.run(willow, image) or willow
+
+            # Find the output format to use
+            if 'output-format' in env:
+                # Developer specified an output format
+                output_format = env['output-format']
+            else:
+                # Default to outputting in original format
+                output_format = original_format
+
+                # Convert BMP files to PNG
+                if original_format == 'bmp':
+                    output_format = 'png'
+
+                # Convert unanimated GIFs to PNG as well
+                if original_format == 'gif' and not willow.has_animation():
+                    output_format = 'png'
+
+            if output_format == 'jpeg':
                 # Allow changing of JPEG compression quality
-                if hasattr(settings, 'WAGTAILIMAGES_JPEG_QUALITY'):
+                if 'jpeg-quality' in env:
+                    quality = env['jpeg-quality']
+                elif hasattr(settings, 'WAGTAILIMAGES_JPEG_QUALITY'):
                     quality = settings.WAGTAILIMAGES_JPEG_QUALITY
                 else:
                     quality = 85
 
-                return willow.save_as_jpeg(output, quality=quality)
-            elif original_format == 'gif':
-                # Convert image to PNG if it's not animated
-                if not willow.has_animation():
-                    return willow.save_as_png(output)
-                else:
-                    return willow.save_as_gif(output)
-            elif original_format == 'bmp':
-                # Convert to PNG
+                return willow.save_as_jpeg(output, quality=quality, progressive=True, optimize=True)
+            elif output_format == 'png':
                 return willow.save_as_png(output)
-            else:
-                return willow.save(original_format, output)
+            elif output_format == 'gif':
+                return willow.save_as_gif(output)
 
     def get_cache_key(self, image):
         vary_parts = []

@@ -2,15 +2,17 @@ from __future__ import absolute_import, unicode_literals
 
 import itertools
 
+
 import django
 from django import template
 from django.conf import settings
 from django.contrib.humanize.templatetags.humanize import intcomma
 from django.contrib.messages.constants import DEFAULT_TAGS as MESSAGE_TAGS
 from django.template.defaultfilters import stringfilter
+from django.utils.html import conditional_escape
 from django.utils.safestring import mark_safe
 
-from wagtail.utils.pagination import DEFAULT_PAGE_KEY
+from wagtail.utils.pagination import DEFAULT_PAGE_KEY, replace_page_in_query
 from wagtail.wagtailadmin.menu import admin_menu
 from wagtail.wagtailadmin.navigation import get_navigation_menu_items
 from wagtail.wagtailadmin.search import admin_search_areas
@@ -397,3 +399,10 @@ def current_user_can_choose_page(request, page):
     Example: {% current_user_can_choose_page request page as page_is_choosable %}
     """
     return page.permissions_for_user(request.user, request).can_choose()
+
+@register.simple_tag
+def replace_page_param(query, page_number, page_key='p'):
+    """
+    Replaces ``page_key`` from query string with ``page_number``.
+    """
+    return conditional_escape(replace_page_in_query(query, page_number, page_key))

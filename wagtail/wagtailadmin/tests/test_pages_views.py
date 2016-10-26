@@ -22,9 +22,11 @@ from django.utils.dateparse import parse_date
 
 from wagtail.tests.testapp.models import (
     EVENT_AUDIENCE_CHOICES, Advert, AdvertPlacement, BusinessChild, BusinessIndex, BusinessSubIndex,
+    DefaultStreamPage,
     EventPage, EventPageCarouselItem, FilePage, SimplePage, SingleEventPage, SingletonPage,
     StandardChild, StandardIndex, TaggedPage)
 from wagtail.tests.utils import WagtailTestUtils
+from wagtail.wagtailadmin.views.home import RecentEditsPanel
 from wagtail.wagtailcore.models import GroupPagePermission, Page, PageRevision, Site
 from wagtail.wagtailcore.signals import page_published, page_unpublished
 from wagtail.wagtailsearch.index import SearchField
@@ -235,6 +237,12 @@ class TestPageExplorer(TestCase, WagtailTestUtils):
         self.assertEqual(response.status_code, 200)
 
         self.assertContains(response, '/new-event/pointless-suffix/')
+
+    def test_parent_page_is_specific(self):
+        response = self.client.get(reverse('wagtailadmin_explore', args=(self.child_page.id, )))
+        self.assertEqual(response.status_code, 200)
+
+        self.assertIsInstance(response.context['parent_page'], SimplePage)
 
 
 class TestPageExplorerSignposting(TestCase, WagtailTestUtils):
@@ -569,7 +577,7 @@ class TestPageCreation(TestCase, WagtailTestUtils):
         # Get add subpage page
         response = self.client.get(reverse('wagtailadmin_pages:add_subpage', args=(self.root_page.id, )))
 
-        # Check that the user recieved a 403 response
+        # Check that the user received a 403 response
         self.assertEqual(response.status_code, 403)
 
     def test_add_subpage_nonexistantparent(self):
@@ -631,7 +639,7 @@ class TestPageCreation(TestCase, WagtailTestUtils):
         # Get page
         response = self.client.get(reverse('wagtailadmin_pages:add', args=('tests', 'simplepage', self.root_page.id, )))
 
-        # Check that the user recieved a 403 response
+        # Check that the user received a 403 response
         self.assertEqual(response.status_code, 403)
 
     def test_cannot_create_page_with_is_creatable_false(self):
@@ -1225,7 +1233,7 @@ class TestPageEdit(TestCase, WagtailTestUtils):
         # Get edit page
         response = self.client.get(reverse('wagtailadmin_pages:edit', args=(self.child_page.id, )))
 
-        # Check that the user recieved a 403 response
+        # Check that the user received a 403 response
         self.assertEqual(response.status_code, 403)
 
     def test_page_edit_post(self):
@@ -1785,7 +1793,7 @@ class TestPageDelete(TestCase, WagtailTestUtils):
         # Get delete page
         response = self.client.get(reverse('wagtailadmin_pages:delete', args=(self.child_page.id, )))
 
-        # Check that the user recieved a 403 response
+        # Check that the user received a 403 response
         self.assertEqual(response.status_code, 403)
 
         # Check that the deletion has not happened
@@ -2090,7 +2098,7 @@ class TestPageMove(TestCase, WagtailTestUtils):
         # Get move page
         response = self.client.get(reverse('wagtailadmin_pages:move', args=(self.test_page.id, )))
 
-        # Check that the user recieved a 403 response
+        # Check that the user received a 403 response
         self.assertEqual(response.status_code, 403)
 
     def test_page_move_confirm(self):
@@ -2458,7 +2466,7 @@ class TestPageUnpublish(TestCase, WagtailTestUtils):
         # Get unpublish page
         response = self.client.get(reverse('wagtailadmin_pages:unpublish', args=(self.page.id, )))
 
-        # Check that the user recieved an unpublish confirm page
+        # Check that the user received an unpublish confirm page
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'wagtailadmin/pages/confirm_unpublish.html')
 
@@ -2469,7 +2477,7 @@ class TestPageUnpublish(TestCase, WagtailTestUtils):
         # Get unpublish page
         response = self.client.get(reverse('wagtailadmin_pages:unpublish', args=(12345, )))
 
-        # Check that the user recieved a 404 response
+        # Check that the user received a 404 response
         self.assertEqual(response.status_code, 404)
 
     def test_unpublish_view_bad_permissions(self):
@@ -2486,7 +2494,7 @@ class TestPageUnpublish(TestCase, WagtailTestUtils):
         # Get unpublish page
         response = self.client.get(reverse('wagtailadmin_pages:unpublish', args=(self.page.id, )))
 
-        # Check that the user recieved a 403 response
+        # Check that the user received a 403 response
         self.assertEqual(response.status_code, 403)
 
     def test_unpublish_view_post(self):
@@ -2521,7 +2529,7 @@ class TestPageUnpublish(TestCase, WagtailTestUtils):
         # Get unpublish page
         response = self.client.get(reverse('wagtailadmin_pages:unpublish', args=(self.page.id, )))
 
-        # Check that the user recieved an unpublish confirm page
+        # Check that the user received an unpublish confirm page
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'wagtailadmin/pages/confirm_unpublish.html')
         # Check the form does not contain the checkbox field include_descendants
@@ -2567,7 +2575,7 @@ class TestPageUnpublishIncludingDescendants(TestCase, WagtailTestUtils):
         # Get unpublish page
         response = self.client.get(reverse('wagtailadmin_pages:unpublish', args=(self.test_page.id, )))
 
-        # Check that the user recieved an unpublish confirm page
+        # Check that the user received an unpublish confirm page
         self.assertEqual(response.status_code, 200)
         self.assertTemplateUsed(response, 'wagtailadmin/pages/confirm_unpublish.html')
         # Check the form contains the checkbox field include_descendants
@@ -2690,7 +2698,7 @@ class TestApproveRejectModeration(TestCase, WagtailTestUtils):
         # Post
         response = self.client.post(reverse('wagtailadmin_pages:approve_moderation', args=(12345, )))
 
-        # Check that the user recieved a 404 response
+        # Check that the user received a 404 response
         self.assertEqual(response.status_code, 404)
 
     def test_approve_moderation_view_bad_permissions(self):
@@ -2707,7 +2715,7 @@ class TestApproveRejectModeration(TestCase, WagtailTestUtils):
         # Post
         response = self.client.post(reverse('wagtailadmin_pages:approve_moderation', args=(self.revision.id, )))
 
-        # Check that the user recieved a 403 response
+        # Check that the user received a 403 response
         self.assertEqual(response.status_code, 403)
 
     def test_reject_moderation_view(self):
@@ -2733,7 +2741,7 @@ class TestApproveRejectModeration(TestCase, WagtailTestUtils):
         # Post
         response = self.client.post(reverse('wagtailadmin_pages:reject_moderation', args=(12345, )))
 
-        # Check that the user recieved a 404 response
+        # Check that the user received a 404 response
         self.assertEqual(response.status_code, 404)
 
     def test_reject_moderation_view_bad_permissions(self):
@@ -2750,7 +2758,7 @@ class TestApproveRejectModeration(TestCase, WagtailTestUtils):
         # Post
         response = self.client.post(reverse('wagtailadmin_pages:reject_moderation', args=(self.revision.id, )))
 
-        # Check that the user recieved a 403 response
+        # Check that the user received a 403 response
         self.assertEqual(response.status_code, 403)
 
     def test_preview_for_moderation(self):
@@ -2978,7 +2986,7 @@ class TestNotificationPreferences(TestCase, WagtailTestUtils):
         # Approve
         self.approve()
 
-        # Submitter must recieve an approved email
+        # Submitter must receive an approved email
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].to, ['submitter@email.com'])
         self.assertEqual(mail.outbox[0].subject, 'The page "Hello world!" has been approved')
@@ -3002,7 +3010,7 @@ class TestNotificationPreferences(TestCase, WagtailTestUtils):
         # Reject
         self.reject()
 
-        # Submitter must recieve a rejected email
+        # Submitter must receive a rejected email
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].to, ['submitter@email.com'])
         self.assertEqual(mail.outbox[0].subject, 'The page "Hello world!" has been rejected')
@@ -3732,3 +3740,50 @@ class TestRecentEditsPanel(TestCase, WagtailTestUtils):
         # Alice's dashboard should still list that first edit
         response = self.go_to_dashboard_response()
         self.assertIn('Your most recent edits', response.content.decode('utf-8'))
+
+    def test_panel(self):
+        """Test if the panel actually returns expected pages """
+        self.client.login(username='bob', password='password')
+        # change a page
+        self.change_something("Bob's edit")
+        # set a user to 'mock' a request
+        self.client.user = get_user_model().objects.get(email='bob@email.com')
+        # get the panel to get the last edits
+        panel = RecentEditsPanel(self.client)
+        # check if the revision is the revision of edited Page
+        self.assertEqual(panel.last_edits[0][0].page, Page.objects.get(pk=self.child_page.id))
+        # check if the page in this list is the specific page of this revision
+        self.assertEqual(panel.last_edits[0][1], Page.objects.get(pk=self.child_page.id).specific)
+
+
+class TestIssue2994(TestCase, WagtailTestUtils):
+    """
+    When submitting the add/edit page form, Django 1.10.1 fails to update StreamFields
+    that have a default value, because it notices the lack of postdata field
+    with a name exactly matching the field name and wrongly assumes that the field has
+    been omitted from the form. To avoid this in Django 1.10.1, we need to set
+    dont_use_model_field_default_for_empty_data=True on the widget; in Django >=1.10.2,
+    we need to provide a custom value_omitted_from_data method.
+    """
+    def setUp(self):
+        self.root_page = Page.objects.get(id=2)
+        self.user = self.login()
+
+    def test_page_edit_post_publish_url(self):
+        # Post
+        post_data = {
+            'title': "Issue 2994 test",
+            'slug': 'issue-2994-test',
+            'body-count': '1',
+            'body-0-deleted': '',
+            'body-0-order': '0',
+            'body-0-type': 'text',
+            'body-0-value': 'hello world',
+            'action-publish': "Publish",
+        }
+        self.client.post(
+            reverse('wagtailadmin_pages:add', args=('tests', 'defaultstreampage', self.root_page.id)), post_data
+        )
+        new_page = DefaultStreamPage.objects.get(slug='issue-2994-test')
+        self.assertEqual(1, len(new_page.body))
+        self.assertEqual('hello world', new_page.body[0].value)

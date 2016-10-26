@@ -30,7 +30,7 @@ install_requires = [
     "beautifulsoup4>=4.5.1",
     "html5lib>=0.999,<1",
     "Unidecode>=0.04.14",
-    "Willow>=0.3b4,<0.4",
+    "Willow>=0.4,<0.5",
 ]
 
 # Testing dependencies
@@ -40,7 +40,7 @@ testing_extras = [
     'python-dateutil>=2.2',
     'pytz>=2014.7',
     'Pillow>=2.7.0',
-    'elasticsearch>=1.0.0',
+    'elasticsearch>=1.0.0,<3.0',
     'Jinja2>=2.8,<3.0',
     'boto3>=1.1,<1.2',
 
@@ -86,6 +86,7 @@ setup(
         'Framework :: Django',
         'Framework :: Django :: 1.8',
         'Framework :: Django :: 1.9',
+        'Framework :: Django :: 1.10',
         'Topic :: Internet :: WWW/HTTP :: Site Management',
     ],
     install_requires=install_requires,

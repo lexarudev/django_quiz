@@ -5,10 +5,10 @@ import base64
 import collections
 import json
 import unittest
-import warnings
 from decimal import Decimal
 
 # non-standard import name for ugettext_lazy, to prevent strings from being picked up for translation
+import django
 from django import forms
 from django.core.exceptions import ValidationError
 from django.forms.utils import ErrorList
@@ -20,7 +20,7 @@ from django.utils.translation import ugettext_lazy as __
 
 from wagtail.tests.testapp.blocks import LinkBlock as CustomLinkBlock
 from wagtail.tests.testapp.blocks import SectionBlock
-from wagtail.utils.deprecation import RemovedInWagtail18Warning
+from wagtail.tests.testapp.models import SimplePage
 from wagtail.wagtailcore import blocks
 from wagtail.wagtailcore.models import Page
 from wagtail.wagtailcore.rich_text import RichText
@@ -35,24 +35,6 @@ class FooStreamBlock(blocks.StreamBlock):
         if not any(block.value == 'foo' for block in value):
             raise blocks.StreamBlockValidationError(non_block_errors=ErrorList([self.error]))
         return value
-
-
-class LegacyRenderMethodBlock(blocks.CharBlock):
-    """
-    A block with a render method that doesn't accept a 'context' kwarg.
-    Support for these will be dropped in Wagtail 1.8
-    """
-    def render(self, value):
-        return str(value).upper()
-
-
-class LegacyRenderBasicMethodBlock(blocks.CharBlock):
-    """
-    A block with a render_basic method that doesn't accept a 'context' kwarg.
-    Support for these will be dropped in Wagtail 1.8
-    """
-    def render_basic(self, value):
-        return str(value).upper()
 
 
 class TestFieldBlock(unittest.TestCase):
@@ -185,24 +167,6 @@ class TestFieldBlock(unittest.TestCase):
         block = CalenderBlock()
         self.assertIn('pretty.css', ''.join(block.all_media().render_css()))
         self.assertIn('animations.js', ''.join(block.all_media().render_js()))
-
-    def test_legacy_render_basic(self):
-        """
-        LegacyRenderBasicMethodBlock defines a render_basic method that doesn't accept
-        a 'context' kwarg. Calling 'render' should gracefully handle this and return
-        the result of calling render_basic(value) (i.e. without passing context), but
-        generate a RemovedInWagtail18Warning.
-        """
-        block = LegacyRenderBasicMethodBlock()
-
-        with warnings.catch_warnings(record=True) as ws:
-            warnings.simplefilter('always')
-
-            result = block.render('hello')
-
-        self.assertEqual(result, 'HELLO')
-        self.assertEqual(len(ws), 1)
-        self.assertIs(ws[0].category, RemovedInWagtail18Warning)
 
 
 class TestIntegerBlock(unittest.TestCase):
@@ -692,6 +656,13 @@ class TestRawHTMLBlock(unittest.TestCase):
         self.assertEqual(result, '<blink>BÖÖM</blink>')
         self.assertIsInstance(result, SafeData)
 
+    @unittest.skipIf(django.VERSION < (1, 10, 2), "value_omitted_from_data is not available")
+    def test_value_omitted_from_data(self):
+        block = blocks.RawHTMLBlock()
+        self.assertFalse(block.value_omitted_from_data({'rawhtml': 'ohai'}, {}, 'rawhtml'))
+        self.assertFalse(block.value_omitted_from_data({'rawhtml': ''}, {}, 'rawhtml'))
+        self.assertTrue(block.value_omitted_from_data({'nothing-here': 'nope'}, {}, 'rawhtml'))
+
     def test_clean_required_field(self):
         block = blocks.RawHTMLBlock()
         result = block.clean(mark_safe('<blink>BÖÖM</blink>'))
@@ -1096,6 +1067,17 @@ class TestStructBlock(SimpleTestCase):
         self.assertTrue(isinstance(struct_val, blocks.StructValue))
         self.assertTrue(isinstance(struct_val.bound_blocks['link'].block, blocks.URLBlock))
 
+    @unittest.skipIf(django.VERSION < (1, 10, 2), "value_omitted_from_data is not available")
+    def test_value_omitted_from_data(self):
+        block = blocks.StructBlock([
+            ('title', blocks.CharBlock()),
+            ('link', blocks.URLBlock()),
+        ])
+
+        # overall value is considered present in the form if any sub-field is present
+        self.assertFalse(block.value_omitted_from_data({'mylink-title': 'Torchbox'}, {}, 'mylink'))
+        self.assertTrue(block.value_omitted_from_data({'nothing-here': 'nope'}, {}, 'mylink'))
+
     def test_default_is_returned_as_structvalue(self):
         """When returning the default value of a StructBlock (e.g. because it's
         a child of another StructBlock, and the outer value is missing that key)
@@ -1235,25 +1217,6 @@ class TestListBlock(unittest.TestCase):
 
         self.assertIn('<h1 lang="fr">Bonjour le monde!</h1>', html)
         self.assertIn('<h1 lang="fr">Au revoir le monde!</h1>', html)
-
-    def test_child_with_legacy_render(self):
-        """
-        If the child block has a legacy 'render' method that doesn't accept a 'context'
-        kwarg, ListBlock.render should use the result of calling render(child_value), but
-        generate a RemovedInWagtail18Warning.
-        """
-        block = blocks.ListBlock(LegacyRenderBasicMethodBlock())
-
-        with warnings.catch_warnings(record=True) as ws:
-            warnings.simplefilter('always')
-
-            result = block.render(['hello', 'world'])
-
-        self.assertIn('<li>HELLO</li>', result)
-        self.assertIn('<li>WORLD</li>', result)
-        self.assertEqual(len(ws), 2)
-        self.assertIs(ws[0].category, RemovedInWagtail18Warning)
-        self.assertIs(ws[1].category, RemovedInWagtail18Warning)
 
     def render_form(self):
         class LinkBlock(blocks.StructBlock):
@@ -1407,6 +1370,18 @@ class TestListBlock(unittest.TestCase):
         ])
 
         self.assertEqual(content, ["Wagtail", "Django"])
+
+    @unittest.skipIf(django.VERSION < (1, 10, 2), "value_omitted_from_data is not available")
+    def test_value_omitted_from_data(self):
+        block = blocks.ListBlock(blocks.CharBlock())
+
+        # overall value is considered present in the form if the 'count' field is present
+        self.assertFalse(block.value_omitted_from_data({'mylist-count': '0'}, {}, 'mylist'))
+        self.assertFalse(block.value_omitted_from_data({
+            'mylist-count': '1',
+            'mylist-0-value': 'hello', 'mylist-0-deleted': '', 'mylist-0-order': '0'
+        }, {}, 'mylist'))
+        self.assertTrue(block.value_omitted_from_data({'nothing-here': 'nope'}, {}, 'mylist'))
 
     def test_ordering_in_form_submission_uses_order_field(self):
         block = blocks.ListBlock(blocks.CharBlock())
@@ -1617,39 +1592,6 @@ class TestStreamBlock(SimpleTestCase):
         html = value.render_as_block()
         self.assertIn('<div class="block-heading"><h1>Hello</h1></div>', html)
 
-    def test_render_child_with_legacy_render_method(self):
-        """
-        StreamBlock should gracefully handle child blocks with a legacy 'render'
-        method (one which doesn't accept a 'context' kwarg), but output a
-        RemovedInWagtail18Warning
-        """
-        block = blocks.StreamBlock([
-            ('heading', LegacyRenderMethodBlock()),
-            ('paragraph', blocks.CharBlock()),
-        ])
-        value = block.to_python([
-            {'type': 'heading', 'value': 'Hello'}
-        ])
-        with warnings.catch_warnings(record=True) as ws:
-            warnings.simplefilter('always')
-
-            result = block.render(value)
-
-        self.assertIn('<div class="block-heading">HELLO</div>', result)
-        self.assertEqual(len(ws), 1)
-        self.assertIs(ws[0].category, RemovedInWagtail18Warning)
-
-        # calling render_as_block() on value (a StreamValue instance)
-        # should be equivalent to block.render(value)
-        with warnings.catch_warnings(record=True) as ws:
-            warnings.simplefilter('always')
-
-            result = value.render_as_block()
-
-        self.assertIn('<div class="block-heading">HELLO</div>', result)
-        self.assertEqual(len(ws), 1)
-        self.assertIs(ws[0].category, RemovedInWagtail18Warning)
-
     def test_render_passes_context_to_children(self):
         block = blocks.StreamBlock([
             ('heading', blocks.CharBlock(template='tests/blocks/heading_block.html')),
@@ -1783,6 +1725,21 @@ class TestStreamBlock(SimpleTestCase):
             ),
             html
         )
+
+    @unittest.skipIf(django.VERSION < (1, 10, 2), "value_omitted_from_data is not available")
+    def test_value_omitted_from_data(self):
+        block = blocks.StreamBlock([
+            ('heading', blocks.CharBlock()),
+        ])
+
+        # overall value is considered present in the form if the 'count' field is present
+        self.assertFalse(block.value_omitted_from_data({'mystream-count': '0'}, {}, 'mystream'))
+        self.assertFalse(block.value_omitted_from_data({
+            'mystream-count': '1',
+            'mystream-0-type': 'heading', 'mystream-0-value': 'hello',
+            'mystream-0-deleted': '', 'mystream-0-order': '0'
+        }, {}, 'mystream'))
+        self.assertTrue(block.value_omitted_from_data({'nothing-here': 'nope'}, {}, 'mystream'))
 
     def test_validation_errors(self):
         class ValidatedBlock(blocks.StreamBlock):
@@ -2080,6 +2037,11 @@ class TestPageChooserBlock(TestCase):
         self.assertIn(expected_html, christmas_form_html)
         self.assertIn("pick a page, any page", christmas_form_html)
 
+    def test_form_render_with_target_model(self):
+        block = blocks.PageChooserBlock(help_text="pick a page, any page", target_model='tests.SimplePage')
+        empty_form_html = block.render_form(None, 'page')
+        self.assertIn('createPageChooser("page", ["tests.simplepage"], null, false);', empty_form_html)
+
     def test_form_render_with_can_choose_root(self):
         block = blocks.PageChooserBlock(help_text="pick a page, any page", can_choose_root=True)
         empty_form_html = block.render_form(None, 'page')
@@ -2106,6 +2068,26 @@ class TestPageChooserBlock(TestCase):
 
         self.assertEqual(nonrequired_block.clean(christmas_page), christmas_page)
         self.assertEqual(nonrequired_block.clean(None), None)
+
+    def test_target_model_string(self):
+        block = blocks.PageChooserBlock(target_model='tests.SimplePage')
+        self.assertEqual(block.target_model, SimplePage)
+
+    def test_target_model_literal(self):
+        block = blocks.PageChooserBlock(target_model=SimplePage)
+        self.assertEqual(block.target_model, SimplePage)
+
+    def test_deconstruct_target_model_string(self):
+        block = blocks.PageChooserBlock(target_model='tests.SimplePage')
+        self.assertEqual(block.deconstruct(), (
+            'wagtail.wagtailcore.blocks.PageChooserBlock',
+            (), {'target_model': 'tests.SimplePage'}))
+
+    def test_deconstruct_target_model_literal(self):
+        block = blocks.PageChooserBlock(target_model=SimplePage)
+        self.assertEqual(block.deconstruct(), (
+            'wagtail.wagtailcore.blocks.PageChooserBlock',
+            (), {'target_model': 'tests.SimplePage'}))
 
 
 class TestSystemCheck(TestCase):

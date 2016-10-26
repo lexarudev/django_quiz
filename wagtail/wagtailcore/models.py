@@ -397,6 +397,12 @@ class Page(six.with_metaclass(PageBase, AbstractPage, index.Indexed, Clusterable
     # Do not allow plain Page instances to be created through the Wagtail admin
     is_creatable = False
 
+    # Define these attributes early to avoid masking errors. (Issue #3078)
+    # The canonical definition is in wagtailadmin.edit_handlers.
+    content_panels = []
+    promote_panels = []
+    settings_panels = []
+
     def __init__(self, *args, **kwargs):
         super(Page, self).__init__(*args, **kwargs)
         if not self.id and not self.content_type_id:
@@ -673,6 +679,12 @@ class Page(six.with_metaclass(PageBase, AbstractPage, index.Indexed, Clusterable
                 return RouteResult(self)
             else:
                 raise Http404
+
+    def get_admin_display_title(self):
+        """
+        Return the title for this page as it should appear in the admin backend.
+        """
+        return self.title
 
     def save_revision(self, user=None, submitted_for_moderation=False, approved_go_live_at=None, changed=True):
         self.full_clean()
@@ -1233,6 +1245,8 @@ class Page(six.with_metaclass(PageBase, AbstractPage, index.Indexed, Clusterable
             'REMOTE_ADDR', 'HTTP_X_FORWARDED_FOR', 'HTTP_COOKIE', 'HTTP_USER_AGENT',
             'wsgi.version', 'wsgi.multithread', 'wsgi.multiprocess', 'wsgi.run_once',
         ]
+        if settings.SECURE_PROXY_SSL_HEADER:
+            HEADERS_FROM_ORIGINAL_REQUEST.append(settings.SECURE_PROXY_SSL_HEADER[0])
         if original_request:
             for header in HEADERS_FROM_ORIGINAL_REQUEST:
                 if header in original_request.META:

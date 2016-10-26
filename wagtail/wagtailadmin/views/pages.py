@@ -40,6 +40,7 @@ def explorer_nav(request):
 
 def index(request, parent_page_id=None):
     if parent_page_id:
+<<<<<<< HEAD
         parent_page = get_page_if_explorable(parent_page_id, request)
     else:
         # The user visited /admin/pages/, so we need to figure out the appropriate "root page" to show them.
@@ -48,6 +49,11 @@ def index(request, parent_page_id=None):
             cca_path = get_closest_common_ancestor_path(request)
             if cca_path:
                 parent_page = Page.objects.get(path=cca_path)
+=======
+        parent_page = get_object_or_404(Page, id=parent_page_id).specific
+    else:
+        parent_page = Page.get_first_root_node().specific
+>>>>>>> upstream/master
 
     pages = parent_page.get_explorable_children(request).prefetch_related('content_type')
 
@@ -104,7 +110,7 @@ def index(request, parent_page_id=None):
         paginator, pages = paginate(request, pages, per_page=50)
 
     return render(request, 'wagtailadmin/pages/index.html', {
-        'parent_page': parent_page,
+        'parent_page': parent_page.specific,
         'ordering': ordering,
         'pagination_query_params': "ordering=%s" % ordering,
         'pages': pages,
@@ -226,18 +232,18 @@ def create(request, content_type_app_name, content_type_model_name, parent_page_
             # Notifications
             if is_publishing:
                 if page.go_live_at and page.go_live_at > timezone.now():
-                    messages.success(request, _("Page '{0}' created and scheduled for publishing.").format(page.title), buttons=[
+                    messages.success(request, _("Page '{0}' created and scheduled for publishing.").format(page.get_admin_display_title()), buttons=[
                         messages.button(reverse('wagtailadmin_pages:edit', args=(page.id,)), _('Edit'))
                     ])
                 else:
-                    messages.success(request, _("Page '{0}' created and published.").format(page.title), buttons=[
+                    messages.success(request, _("Page '{0}' created and published.").format(page.get_admin_display_title()), buttons=[
                         messages.button(page.url, _('View live')),
                         messages.button(reverse('wagtailadmin_pages:edit', args=(page.id,)), _('Edit'))
                     ])
             elif is_submitting:
                 messages.success(
                     request,
-                    _("Page '{0}' created and submitted for moderation.").format(page.title),
+                    _("Page '{0}' created and submitted for moderation.").format(page.get_admin_display_title()),
                     buttons=[
                         messages.button(reverse('wagtailadmin_pages:view_draft', args=(page.id,)), _('View draft')),
                         messages.button(reverse('wagtailadmin_pages:edit', args=(page.id,)), _('Edit'))
@@ -246,7 +252,7 @@ def create(request, content_type_app_name, content_type_model_name, parent_page_
                 if not send_notification(page.get_latest_revision().id, 'submitted', request.user.pk):
                     messages.error(request, _("Failed to send notifications to moderators"))
             else:
-                messages.success(request, _("Page '{0}' created.").format(page.title))
+                messages.success(request, _("Page '{0}' created.").format(page.get_admin_display_title()))
 
             for fn in hooks.get_hooks('after_create_page'):
                 result = fn(request, page)
@@ -352,13 +358,13 @@ def edit(request, page_id):
                             "Revision from {0} of page '{1}' has been scheduled for publishing."
                         ).format(
                             previous_revision.created_at.strftime("%d %b %Y %H:%M"),
-                            page.title
+                            page.get_admin_display_title()
                         )
                     else:
                         message = _(
                             "Page '{0}' has been scheduled for publishing."
                         ).format(
-                            page.title
+                            page.get_admin_display_title()
                         )
 
                     messages.success(request, message, buttons=[
@@ -376,13 +382,13 @@ def edit(request, page_id):
                             "Revision from {0} of page '{1}' has been published."
                         ).format(
                             previous_revision.created_at.strftime("%d %b %Y %H:%M"),
-                            page.title
+                            page.get_admin_display_title()
                         )
                     else:
                         message = _(
                             "Page '{0}' has been published."
                         ).format(
-                            page.title
+                            page.get_admin_display_title()
                         )
 
                     messages.success(request, message, buttons=[
@@ -401,7 +407,7 @@ def edit(request, page_id):
                 message = _(
                     "Page '{0}' has been submitted for moderation."
                 ).format(
-                    page.title
+                    page.get_admin_display_title()
                 )
 
                 messages.success(request, message, buttons=[
@@ -424,14 +430,14 @@ def edit(request, page_id):
                     message = _(
                         "Page '{0}' has been replaced with revision from {1}."
                     ).format(
-                        page.title,
+                        page.get_admin_display_title(),
                         previous_revision.created_at.strftime("%d %b %Y %H:%M")
                     )
                 else:
                     message = _(
                         "Page '{0}' has been updated."
                     ).format(
-                        page.title
+                        page.get_admin_display_title()
                     )
 
                 messages.success(request, message)
@@ -508,7 +514,7 @@ def delete(request, page_id):
         parent_id = page.get_parent().id
         page.delete()
 
-        messages.success(request, _("Page '{0}' deleted.").format(page.title))
+        messages.success(request, _("Page '{0}' deleted.").format(page.get_admin_display_title()))
 
         for fn in hooks.get_hooks('after_delete_page'):
             result = fn(request, page)
@@ -680,7 +686,7 @@ def unpublish(request, page_id):
                 if user_perms.for_page(live_descendant_page).can_unpublish():
                     live_descendant_page.unpublish()
 
-        messages.success(request, _("Page '{0}' unpublished.").format(page.title), buttons=[
+        messages.success(request, _("Page '{0}' unpublished.").format(page.get_admin_display_title()), buttons=[
             messages.button(reverse('wagtailadmin_pages:edit', args=(page.id,)), _('Edit'))
         ])
 
@@ -742,7 +748,7 @@ def move_confirm(request, page_to_move_id, destination_id):
         # so don't bother to catch InvalidMoveToDescendant
         page_to_move.move(destination, pos='last-child')
 
-        messages.success(request, _("Page '{0}' moved.").format(page_to_move.title), buttons=[
+        messages.success(request, _("Page '{0}' moved.").format(page_to_move.get_admin_display_title()), buttons=[
             messages.button(reverse('wagtailadmin_pages:edit', args=(page_to_move.id,)), _('Edit'))
         ])
 
@@ -841,10 +847,10 @@ def copy(request, page_id):
             if form.cleaned_data.get('copy_subpages'):
                 messages.success(
                     request,
-                    _("Page '{0}' and {1} subpages copied.").format(page.title, new_page.get_descendants().count())
+                    _("Page '{0}' and {1} subpages copied.").format(page.get_admin_display_title(), new_page.get_descendants().count())
                 )
             else:
-                messages.success(request, _("Page '{0}' copied.").format(page.title))
+                messages.success(request, _("Page '{0}' copied.").format(page.get_admin_display_title()))
 
             # Redirect to explore of parent page
             if next_url:
@@ -895,12 +901,12 @@ def approve_moderation(request, revision_id):
         raise PermissionDenied
 
     if not revision.submitted_for_moderation:
-        messages.error(request, _("The page '{0}' is not currently awaiting moderation.").format(revision.page.title))
+        messages.error(request, _("The page '{0}' is not currently awaiting moderation.").format(revision.page.get_admin_display_title()))
         return redirect('wagtailadmin_home')
 
     if request.method == 'POST':
         revision.approve_moderation()
-        messages.success(request, _("Page '{0}' published.").format(revision.page.title), buttons=[
+        messages.success(request, _("Page '{0}' published.").format(revision.page.get_admin_display_title()), buttons=[
             messages.button(revision.page.url, _('View live')),
             messages.button(reverse('wagtailadmin_pages:edit', args=(revision.page.id,)), _('Edit'))
         ])
@@ -916,12 +922,12 @@ def reject_moderation(request, revision_id):
         raise PermissionDenied
 
     if not revision.submitted_for_moderation:
-        messages.error(request, _("The page '{0}' is not currently awaiting moderation.").format(revision.page.title))
+        messages.error(request, _("The page '{0}' is not currently awaiting moderation.").format(revision.page.get_admin_display_title()))
         return redirect('wagtailadmin_home')
 
     if request.method == 'POST':
         revision.reject_moderation()
-        messages.success(request, _("Page '{0}' rejected for publication.").format(revision.page.title), buttons=[
+        messages.success(request, _("Page '{0}' rejected for publication.").format(revision.page.get_admin_display_title()), buttons=[
             messages.button(reverse('wagtailadmin_pages:edit', args=(revision.page.id,)), _('Edit'))
         ])
         if not send_notification(revision.id, 'rejected', request.user.pk):
@@ -937,7 +943,7 @@ def preview_for_moderation(request, revision_id):
         raise PermissionDenied
 
     if not revision.submitted_for_moderation:
-        messages.error(request, _("The page '{0}' is not currently awaiting moderation.").format(revision.page.title))
+        messages.error(request, _("The page '{0}' is not currently awaiting moderation.").format(revision.page.get_admin_display_title()))
         return redirect('wagtailadmin_home')
 
     page = revision.as_page_object()
@@ -963,7 +969,7 @@ def lock(request, page_id):
         page.locked = True
         page.save()
 
-        messages.success(request, _("Page '{0}' is now locked.").format(page.title))
+        messages.success(request, _("Page '{0}' is now locked.").format(page.get_admin_display_title()))
 
     # Redirect
     redirect_to = request.POST.get('next', None)
@@ -987,7 +993,7 @@ def unlock(request, page_id):
         page.locked = False
         page.save()
 
-        messages.success(request, _("Page '{0}' is now unlocked.").format(page.title))
+        messages.success(request, _("Page '{0}' is now unlocked.").format(page.get_admin_display_title()))
 
     # Redirect
     redirect_to = request.POST.get('next', None)
