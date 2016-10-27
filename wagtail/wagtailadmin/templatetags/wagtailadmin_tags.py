@@ -2,20 +2,22 @@ from __future__ import absolute_import, unicode_literals
 
 import itertools
 
+
 import django
 from django import template
 from django.conf import settings
 from django.contrib.humanize.templatetags.humanize import intcomma
 from django.contrib.messages.constants import DEFAULT_TAGS as MESSAGE_TAGS
 from django.template.defaultfilters import stringfilter
+from django.utils.html import conditional_escape
 from django.utils.safestring import mark_safe
 
-from wagtail.utils.pagination import DEFAULT_PAGE_KEY
+from wagtail.utils.pagination import DEFAULT_PAGE_KEY, replace_page_in_query
 from wagtail.wagtailadmin.menu import admin_menu
+from wagtail.wagtailadmin.navigation import get_navigation_menu_items
 from wagtail.wagtailadmin.search import admin_search_areas
 from wagtail.wagtailcore import hooks
-from wagtail.wagtailcore.models import (
-    PageViewRestriction, UserPagePermissionsProxy, get_navigation_menu_items)
+from wagtail.wagtailcore.models import PageViewRestriction, UserPagePermissionsProxy
 from wagtail.wagtailcore.utils import cautious_slugify as _cautious_slugify
 from wagtail.wagtailcore.utils import camelcase_to_underscore, escape_script
 
@@ -29,10 +31,10 @@ else:
     assignment_tag = register.assignment_tag
 
 
-@register.inclusion_tag('wagtailadmin/shared/explorer_nav.html')
-def explorer_nav(request):
+@register.inclusion_tag('wagtailadmin/shared/explorer_nav.html', takes_context=True)
+def explorer_nav(context):
     return {
-        'nodes': get_navigation_menu_items(request)
+        'nodes': get_navigation_menu_items(context['request'].user)
     }
 
 
@@ -76,6 +78,14 @@ def ellipsistrim(value, max_length):
             truncd_val = truncd_val[:truncd_val.rfind(" ")]
         return truncd_val + "..."
     return value
+
+
+@register.filter
+def no_thousand_separator(num):
+    """
+    Prevent USE_THOUSAND_SEPARATOR from automatically inserting a thousand separator on this value
+    """
+    return str(num)
 
 
 @register.filter
@@ -158,6 +168,15 @@ def usage_count_enabled():
 @assignment_tag
 def base_url_setting():
     return getattr(settings, 'BASE_URL', None)
+
+
+@assignment_tag
+def allow_unicode_slugs():
+    if django.VERSION < (1, 9):
+        # Unicode slugs are unsupported on Django 1.8
+        return False
+    else:
+        return getattr(settings, 'WAGTAIL_ALLOW_UNICODE_SLUGS', True)
 
 
 class EscapeScriptNode(template.Node):
@@ -380,3 +399,10 @@ def current_user_can_choose_page(request, page):
     Example: {% current_user_can_choose_page request page as page_is_choosable %}
     """
     return page.permissions_for_user(request.user, request).can_choose()
+
+@register.simple_tag
+def replace_page_param(query, page_number, page_key='p'):
+    """
+    Replaces ``page_key`` from query string with ``page_number``.
+    """
+    return conditional_escape(replace_page_in_query(query, page_number, page_key))

@@ -8,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Wagtail\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-05-18 21:37+0000\n"
-"PO-Revision-Date: 2016-05-18 13:48+0000\n"
-"Last-Translator: mmiskiew <mmiskiew@gmail.com>\n"
+"POT-Creation-Date: 2016-10-05 16:37+0100\n"
+"PO-Revision-Date: 2016-09-22 15:05+0000\n"
+"Last-Translator: Matt Westcott <matthew@torchbox.com>\n"
 "Language-Team: Polish (http://www.transifex.com/torchbox/wagtail/language/"
 "pl/)\n"
 "MIME-Version: 1.0\n"
@@ -93,9 +93,6 @@ msgstr "tekst pomocniczy"
 msgid "to address"
 msgstr "do adresu"
 
-msgid "Optional - form submissions will be emailed to this address"
-msgstr "Opcjonalne - wysyłki formularza zostaną wysłane na ten adres email"
-
 msgid "from address"
 msgstr "adres formularza"
 
@@ -144,9 +141,6 @@ msgstr "Tytuł"
 
 msgid "Origin"
 msgstr "Źródło"
-
-msgid "Submission Date"
-msgstr "Data zgłoszenia"
 
 msgid "Actions"
 msgstr "Akcje"

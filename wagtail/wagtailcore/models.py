@@ -32,7 +32,6 @@ from django.utils.translation import ugettext_lazy as _
 from modelcluster.models import ClusterableModel, get_all_child_relations
 from treebeard.mp_tree import MP_Node
 
-from wagtail.utils.deprecation import SearchFieldsShouldBeAList
 from wagtail.wagtailcore.query import PageQuerySet, TreeQuerySet
 from wagtail.wagtailcore.signals import page_published, page_unpublished
 from wagtail.wagtailcore.url_routing import RouteResult
@@ -258,18 +257,10 @@ class PageBase(models.base.ModelBase):
     def __init__(cls, name, bases, dct):
         super(PageBase, cls).__init__(name, bases, dct)
 
-        if cls._deferred:
+        if DJANGO_VERSION < (1, 10) and getattr(cls, '_deferred', False):
             # this is an internal class built for Django's deferred-attribute mechanism;
             # don't proceed with all this page type registration stuff
             return
-
-        # Override the default `objects` attribute with a `PageManager`.
-        # Managers are not inherited by MTI child models, so `Page` subclasses
-        # will get a plain `Manager` instead of a `PageManager`.
-        # If the developer has set their own custom `Manager` subclass, do not
-        # clobber it.
-        if not cls._meta.abstract and type(cls.objects) is models.Manager:
-            PageManager().contribute_to_class(cls, 'objects')
 
         if 'template' not in dct:
             # Define a default template path derived from the app name and model name
@@ -291,8 +282,21 @@ class PageBase(models.base.ModelBase):
             PAGE_MODEL_CLASSES.append(cls)
 
 
+class AbstractPage(MP_Node):
+    """
+    Abstract superclass for Page. According to Django's inheritance rules, managers set on
+    abstract models are inherited by subclasses, but managers set on concrete models that are extended
+    via multi-table inheritance are not. We therefore need to attach PageManager to an abstract
+    superclass to ensure that it is retained by subclasses of Page.
+    """
+    objects = PageManager()
+
+    class Meta:
+        abstract = True
+
+
 @python_2_unicode_compatible
-class Page(six.with_metaclass(PageBase, MP_Node, index.Indexed, ClusterableModel)):
+class Page(six.with_metaclass(PageBase, AbstractPage, index.Indexed, ClusterableModel)):
     title = models.CharField(
         verbose_name=_('title'),
         max_length=255,
@@ -376,7 +380,7 @@ class Page(six.with_metaclass(PageBase, MP_Node, index.Indexed, ClusterableModel
         editable=False
     )
 
-    search_fields = SearchFieldsShouldBeAList([
+    search_fields = [
         index.SearchField('title', partial_match=True, boost=2),
         index.FilterField('id'),
         index.FilterField('live'),
@@ -388,12 +392,16 @@ class Page(six.with_metaclass(PageBase, MP_Node, index.Indexed, ClusterableModel
         index.FilterField('show_in_menus'),
         index.FilterField('first_published_at'),
         index.FilterField('latest_revision_created_at'),
-    ], name='search_fields on Page subclasses')
+    ]
 
     # Do not allow plain Page instances to be created through the Wagtail admin
     is_creatable = False
 
-    objects = PageManager()
+    # Define these attributes early to avoid masking errors. (Issue #3078)
+    # The canonical definition is in wagtailadmin.edit_handlers.
+    content_panels = []
+    promote_panels = []
+    settings_panels = []
 
     def __init__(self, *args, **kwargs):
         super(Page, self).__init__(*args, **kwargs)
@@ -604,6 +612,12 @@ class Page(six.with_metaclass(PageBase, MP_Node, index.Indexed, ClusterableModel
                 SET url_path= CONCAT(%s, substring(url_path, %s))
                 WHERE path LIKE %s AND id <> %s
             """
+        elif connection.vendor in ('mssql', 'microsoft'):
+            update_statement = """
+                UPDATE wagtailcore_page
+                SET url_path= CONCAT(%s, (SUBSTRING(url_path, 0, %s)))
+                WHERE path LIKE %s AND id <> %s
+            """
         else:
             update_statement = """
                 UPDATE wagtailcore_page
@@ -665,6 +679,12 @@ class Page(six.with_metaclass(PageBase, MP_Node, index.Indexed, ClusterableModel
                 return RouteResult(self)
             else:
                 raise Http404
+
+    def get_admin_display_title(self):
+        """
+        Return the title for this page as it should appear in the admin backend.
+        """
+        return self.title
 
     def save_revision(self, user=None, submitted_for_moderation=False, approved_go_live_at=None, changed=True):
         self.full_clean()
@@ -1172,12 +1192,15 @@ class Page(six.with_metaclass(PageBase, MP_Node, index.Indexed, ClusterableModel
         user_perms = UserPagePermissionsProxy(user, request)
         return user_perms.for_page(self)
 
-    def dummy_request(self):
+    def dummy_request(self, original_request=None, **meta):
         """
         Construct a HttpRequest object that is, as far as possible, representative of ones that would
         receive this page as a response. Used for previewing / moderation and any other place where we
         want to display a view of this page in the admin interface without going through the regular
         page routing logic.
+
+        If you pass in a real request object as original_request, additional information (e.g. client IP, cookies)
+        will be included in the dummy request.
         """
         url = self.full_url
         if url:
@@ -1185,6 +1208,7 @@ class Page(six.with_metaclass(PageBase, MP_Node, index.Indexed, ClusterableModel
             hostname = url_info.hostname
             path = url_info.path
             port = url_info.port or 80
+            scheme = url_info.scheme
         else:
             # Cannot determine a URL to this page - cobble one together based on
             # whatever we find in ALLOWED_HOSTS
@@ -1198,22 +1222,55 @@ class Page(six.with_metaclass(PageBase, MP_Node, index.Indexed, ClusterableModel
                 hostname = 'localhost'
             path = '/'
             port = 80
+            scheme = 'http'
 
-        request = WSGIRequest({
+        dummy_values = {
             'REQUEST_METHOD': 'GET',
             'PATH_INFO': path,
             'SERVER_NAME': hostname,
             'SERVER_PORT': port,
+            'SERVER_PROTOCOL': 'HTTP/1.1',
             'HTTP_HOST': hostname,
+            'wsgi.version': (1, 0),
             'wsgi.input': StringIO(),
-        })
+            'wsgi.errors': StringIO(),
+            'wsgi.url_scheme': scheme,
+            'wsgi.multithread': True,
+            'wsgi.multiprocess': True,
+            'wsgi.run_once': False,
+        }
 
-        # Apply middleware to the request - see http://www.mellowmorning.com/2011/04/18/mock-django-request-for-testing/
-        handler = BaseHandler()
-        handler.load_middleware()
-        # call each middleware in turn and throw away any responses that they might return
-        for middleware_method in handler._request_middleware:
-            middleware_method(request)
+        # Add important values from the original request object, if it was provided.
+        HEADERS_FROM_ORIGINAL_REQUEST = [
+            'REMOTE_ADDR', 'HTTP_X_FORWARDED_FOR', 'HTTP_COOKIE', 'HTTP_USER_AGENT',
+            'wsgi.version', 'wsgi.multithread', 'wsgi.multiprocess', 'wsgi.run_once',
+        ]
+        if settings.SECURE_PROXY_SSL_HEADER:
+            HEADERS_FROM_ORIGINAL_REQUEST.append(settings.SECURE_PROXY_SSL_HEADER[0])
+        if original_request:
+            for header in HEADERS_FROM_ORIGINAL_REQUEST:
+                if header in original_request.META:
+                    dummy_values[header] = original_request.META[header]
+
+        # Add additional custom metadata sent by the caller.
+        dummy_values.update(**meta)
+
+        request = WSGIRequest(dummy_values)
+
+        # Apply middleware to the request
+        # Note that Django makes sure only one of the middleware settings are
+        # used in a project
+        if hasattr(settings, 'MIDDLEWARE'):
+            handler = BaseHandler()
+            handler.load_middleware()
+            handler._middleware_chain(request)
+        elif hasattr(settings, 'MIDDLEWARE_CLASSES'):
+            # Pre Django 1.10 style - see http://www.mellowmorning.com/2011/04/18/mock-django-request-for-testing/
+            handler = BaseHandler()
+            handler.load_middleware()
+            # call each middleware in turn and throw away any responses that they might return
+            for middleware_method in handler._request_middleware:
+                middleware_method(request)
 
         return request
 
@@ -1633,7 +1690,7 @@ class PageRevision(models.Model):
         default=False,
         db_index=True
     )
-    created_at = models.DateTimeField(verbose_name=_('created at'))
+    created_at = models.DateTimeField(db_index=True, verbose_name=_('created at'))
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, verbose_name=_('user'), null=True, blank=True,
         on_delete=models.SET_NULL
@@ -1762,6 +1819,7 @@ PAGE_PERMISSION_TYPE_CHOICES = [
 ]
 
 
+@python_2_unicode_compatible
 class GroupPagePermission(models.Model):
     group = models.ForeignKey(Group, verbose_name=_('group'), related_name='page_permissions', on_delete=models.CASCADE)
     page = models.ForeignKey('Page', verbose_name=_('page'), related_name='group_permissions', on_delete=models.CASCADE)
@@ -1775,6 +1833,13 @@ class GroupPagePermission(models.Model):
         unique_together = ('group', 'page', 'permission_type')
         verbose_name = _('group page permission')
         verbose_name_plural = _('group page permissions')
+
+    def __str__(self):
+        return "Group %d ('%s') has permission '%s' on page %d ('%s')" % (
+            self.group.id, self.group,
+            self.permission_type,
+            self.page.id, self.page
+        )
 
 
 class UserPagePermissionsProxy(object):
@@ -2165,9 +2230,9 @@ class CollectionMember(models.Model):
         on_delete=models.CASCADE
     )
 
-    search_fields = SearchFieldsShouldBeAList([
+    search_fields = [
         index.FilterField('collection'),
-    ], name='search_fields on CollectionMember subclasses')
+    ]
 
     class Meta:
         abstract = True

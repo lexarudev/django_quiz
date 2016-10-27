@@ -1,18 +1,6 @@
-<<<<<<< a282da8be0324bed88f0aa2e80f00fbb7117540e
-<<<<<<< a38a25ecb719d74297be29526a01a19e7468bfb8
 ===========================
 Wagtail 1.5.1 release notes
 ===========================
-=======
-============================================
-Wagtail 1.5.1 release notes - IN DEVELOPMENT
-============================================
->>>>>>> Add docs / changelog section for Wagtail 1.5.1
-=======
-===========================
-Wagtail 1.5.1 release notes
-===========================
->>>>>>> mark 1.5.1 as no longer in development
 
 .. contents::
     :local:
@@ -26,26 +14,13 @@ What's new
 Bug fixes
 ~~~~~~~~~
 
-<<<<<<< a38a25ecb719d74297be29526a01a19e7468bfb8
  * When editing a document link in rich text, the document ID is no longer erroneously interpreted as a page ID (Stephen Rice)
  * Removing embedded media from rich text by mouse click action now gets correctly registered as a change to the field (Loic Teixeira)
-<<<<<<< 24d8e7f20827518fe2718b4fc5f422f6ae22e8b6
-<<<<<<< 3d9a3ace5009516e0b20be5fa93ff8031691c504
-=======
->>>>>>> Credit Gagaro under preferred name
  * Rich text editor is no longer broken in InlinePanels (Matt Westcott, Gagaro)
  * Rich text editor is no longer broken in settings (Matt Westcott)
  * Link tooltip now shows correct urls for newly inserted document links (Matt Westcott)
  * Now page chooser (in a rich text editor) opens up at the link's parent page, rather than at the page itself (Matt Westcott)
-<<<<<<< c9c6234dbe8927b17ad6b2231ff5696472d68845
  * Reverted fix for explorer menu scrolling with page content, as it blocked access to menus that exceed screen height
  * Image listing in the image chooser no longer becomes unpaginated after an invalid upload form submission (Stephen Rice)
  * Confirmation message on the ModelAdmin delete view no longer errors if the model's string representation depends on the primary key (Yannick Chabbert)
  * Applied correct translation tags for 'permanent' / 'temporary' labels on redirects (Matt Westcott)
-=======
->>>>>>> Add docs / changelog section for Wagtail 1.5.1
-=======
- * Rich text editor is no longer broken in InlinePanels (Matt Westcott, Yann Fouillat)
->>>>>>> Ensure that form media required by InlinePanels is correctly pulled in to the edit page - fixes #2662.
-=======
->>>>>>> Track parent page for internal links in rich text - fixes #2639

@@ -342,8 +342,16 @@
   content: "";
 }
 
+.wagtail-icon-logout:before {
+  content: "";
+}
+
 .wagtail-icon-arrow-down-after:after {
   content: "q";
+}
+
+.wagtail-icon-arrow-up-after:after {
+  content: "e";
 }
 
 .wagtail-icon-arrow-right-after:after {

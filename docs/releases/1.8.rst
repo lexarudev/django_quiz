@@ -1,0 +1,43 @@
+==========================================
+Wagtail 1.8 release notes - IN DEVELOPMENT
+==========================================
+
+.. contents::
+    :local:
+    :depth: 1
+
+
+What's new
+==========
+
+
+Minor features
+~~~~~~~~~~~~~~
+
+ * Added support of a custom ``edit_handler`` for site settings. See :ref:`docs for the site settings module <edit_handlers_settings>`. (Axel Haustant)
+ * Added ``get_landing_page_template`` getter method to ``AbstractForm`` (Gagaro)
+ * Added ``Page.get_admin_display_title`` method to override how the title is displayed in the admin (Henk-Jan van Hasselaar)
+ * Added support for specifying custom HTML attributes for table rows on ModelAdmin index pages. See :ref:`modeladmin_get_extra_attrs_for_row` (Andy Babic)
+ * Added ``first_common_ancestor`` method to ``PageQuerySet`` (Tim Heap)
+ * Page chooser now opens at the deepest ancestor page that covers all the pages of the required page type (Tim Heap)
+ * ``PageChooserBlock`` now accepts a ``target_model`` option to specify the required page type (Tim Heap)
+
+
+Bug fixes
+~~~~~~~~~
+
+ * ``AbstractForm`` now respects custom ``get_template`` methods on the page model (Gagaro)
+ * Use specific page model for the parent page in the explore index (Gagaro)
+ * Remove responsive styles in embed when there is no ratio available (Gagaro)
+ * Parent page link in page search modal no longer disappears on hover (Dan Braghis)
+ * ModelAdmin views now consistently call ``get_context_data`` (Andy Babic)
+ * Header for search results on the redirects index page now shows the correct count when the listing is paginated (Nick Smith)
+ * ``set_url_paths`` management command is now compatible with Django 1.10 (Benjamin Bach)
+
+Upgrade considerations
+======================
+
+``wagtail.wagtailimages.models.get_image_model`` has moved
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The ``get_image_model`` function should now be imported from ``wagtail.wagtailimages`` rather than ``wagtail.wagtailimages.models``. See :ref:`custom_image_model_referring_to_image_model`.

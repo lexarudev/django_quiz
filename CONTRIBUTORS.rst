@@ -138,27 +138,43 @@ Contributors
 * Bojan Mihelac
 * Robert Moggach
 * Stephen Rice
-<<<<<<< c79a2a47a0464646270c86c1511980f9e146cc44
-* Yann Fouillat (Gagaro)
-=======
 * Behzad Nategh
-<<<<<<< 24d8e7f20827518fe2718b4fc5f422f6ae22e8b6
-<<<<<<< 3d9a3ace5009516e0b20be5fa93ff8031691c504
->>>>>>> Unicode support for slug as of Django 1.9
-=======
-* Yann Fouillat
->>>>>>> Ensure that form media required by InlinePanels is correctly pulled in to the edit page - fixes #2662.
-=======
 * Yann Fouillat (Gagaro)
-<<<<<<< 2844ce1f4d9fb3bc9c7536b6d149105d9aeb7c8f
->>>>>>> Credit Gagaro under preferred name
-=======
 * Jonny Scholes
-<<<<<<< 05882f695687dbc3cb276f70020e5a9e4e61e26d
->>>>>>> Release notes for #2691
-=======
 * Richard McMillan
->>>>>>> Validate against duplicate form field names - fixes #585
+* Johannes Spielmann
+* Franklin Kingma
+* Ludolf Takens
+* Oktay Altay
+* Bertrand Bordage
+* Paul J Stevens
+* kakulukia
+* Raphael Stolt
+* Tim Graham
+* Thibaud Colas
+* Tobias Schmidt
+* Chris Darko
+* Aymeric Augustin
+* Adriaan Tijsseling
+* sebworks
+* Sean Muck
+* Fábio Macêdo Mendes
+* Eraldo Energy
+* Jesse Legg
+* Tim Leguijt
+* Luiz Boaretto
+* Jonathon Moore
+* Kees Hink
+* Jayden Smith
+* emg36
+* Stein Strindhaug
+* Žan Anderle
+* Mattias Loverot
+* Ricky Robinett
+* Axel Haustant
+* Henk-Jan van Hasselaar
+* alexfromvl
+* Jaap Roes
 
 Translators
 ===========
@@ -166,42 +182,43 @@ Translators
 * Arabic: alfuhigi, Roger Allen, Ahmad Kiswani, Mohamed Mayla
 * Basque: Unai Zalakain
 * Bulgarian: Lyuboslav Petrov
-* Catalan: Antoni Aloy, David Llop
+* Catalan: Antoni Aloy, David Llop, Roger Pons
 * Chinese: hanfeng, Lihan Li, Leway Colin
 * Chinese (China): hanfeng, Daniel Hwang, Jian Li, Listeng Teng, Feng Wang, Joey Zhao
 * Chinese (Taiwan): Lihan Li
 * Croatian (Croatia): Luka Matijević
 * Czech: Ivan Pomykacz, Jiri Stepanek, Marek Turnovec
-* Dutch: benny_AT_it_digin.com, Bram, Brecht Dervaux, Huib Keemink, Thijs Kramer, Samuel Leeuwenburg, mahulst, Michael van Tellingen, Arne Turpyn
+* Danish: Asger Sørensen
+* Dutch: benny_AT_it_digin.com, Bram, Brecht Dervaux, Huib Keemink, Thijs Kramer, Samuel Leeuwenburg, mahulst, Rob Moorman, Michael van Tellingen, Arne Turpyn
 * Dutch (Netherlands): Bram, Franklin Kingma, Maarten Kling, Thijs Kramer
-* Finnish: Eetu Häivälä, Aarni Koskela, Rauli Laine, Glen Somerville, Juha Yrjölä
-* French: Adrien, Timothy Allen, Sebastien Andrivet, Edd Baldry, Bertrand Bordage, André Bouatchidzé, Tom Dyson, Antonin Enfrun, Léo, Pierre Marfoure, nahuel
+* Finnish: Eetu Häivälä, Niklas Jerva, Aarni Koskela, Rauli Laine, Glen Somerville, Juha Yrjölä
+* French: Adrien, Timothy Allen, Sebastien Andrivet, Bertrand Bordage, André Bouatchidzé, Tom Dyson, Antonin Enfrun, Axel Haustant, Léo, Pierre Marfoure, nahuel, Dominique Peretti, Benoît Vogel
 * Galician: fooflare
 * Georgian: André Bouatchidzé
-* German: Ettore Atalan, Patrick Craston, Henrik Kröger, Tammo van Lessen, Martin Löhle, Wasilis Mandratzis-Walz, Daniel Manser, m0rph3u5, Max Pfeiffer, Moritz Pfeiffer, Herbert Poul, Karl Sander, Tobias Schmidt, Johannes Spielmann, Jannis Vajen, Vorlif, Matthew Westcott
-* Greek: Jim Dal, George Giannoulopoulos, Wasilis Mandratzis-Walz, NeotheOne, Serafeim Papastefanos
+* German: Ettore Atalan, Patrick Craston, Henrik Kröger, Tammo van Lessen, Martin Löhle, Wasilis Mandratzis-Walz, Daniel Manser, m0rph3u5, Max Pfeiffer, Moritz Pfeiffer, Herbert Poul, Karl Sander, Tobias Schmidt, Johannes Spielmann, Raphael Stolt, Jannis Vajen, Vorlif, Matthew Westcott
+* Greek: Jim Dal, George Giannoulopoulos, Yiannis Inglessis, Wasilis Mandratzis-Walz, NeotheOne, Serafeim Papastefanos
 * Hebrew (Israel): bjesus, Lior Abazon
-* Hungarian: Laszlo Molnar
+* Hungarian: Laszlo Molnar, Kornél Novák Mergulhão
 * Icelandic (Iceland): Arnar Tumi Þorsteinsson, Kjartan Sverrisson, Sævar Öfjörð Magnússon
-* Indonesian (Indonesia): Sutrisno Efendi
-* Italian: Edd Baldry, Claudio Bantaloukas, Giacomo Ghizzani, Alessio Di Stasio, Andrea Tagliazucchi
-* Japanese: Sangmin Ahn, Shu Ishida, Daigo Shitara, takuan_osho
-* Korean: Kyungil Choi, Ji Han Chung
-* Latvian: Maris Serzans
+* Indonesian (Indonesia): Sutrisno Efendi, Geek Pantura
+* Italian: Edd Baldry, Claudio Bantaloukas, Giacomo Ghizzani, Carlo Miron, Alessio Di Stasio, Andrea Tagliazucchi
+* Japanese: Sangmin Ahn, Shu Ishida, Daigo Shitara, Shimizu Taku
+* Korean: Kyungil Choi, Jihan Chung
+* Latvian: Reinis Rozenbergs, Maris Serzans
 * Mongolian: Delgermurun Purevkhuu
 * Norwegian Bokmål: Eirik Krogstad, Robin Skahjem-Eriksen
 * Persian: Mohammad reza Jelveh
 * Polish: Mateusz, mmiskiew, utek
-* Portuguese (Brazil): Claudemiro Alves Feitosa Neto, Luiz Boaretto, Gladson Brito, Thiago Cangussu, Gilson Filho, João Luiz Lorencetti, Douglas Miranda
+* Portuguese (Brazil): Claudemiro Alves Feitosa Neto, Luiz Boaretto, Gladson Brito, Thiago Cangussu, Gilson Filho, João Luiz Lorencetti, Marcio Mazza, Douglas Miranda, Guilherme Nabanete
 * Portuguese (Portugal): Gladson Brito, Thiago Cangussu, Tiago Henriques, Jose Lourenco, Nuno Matos, Douglas Miranda, Manuela Silva
 * Romanian: Dan Braghis
-* Russian: ajk, Daniil, gsstver, HNKNTA, Sergiy Khalymon, Sergey Komarov, Eugene MechanisM, Mikalai Radchuk, Alexandr Romantsov
-* Slovak (Slovakia): dellax
+* Russian: ajk, Andrey Avdey, Daniil, gsstver, Sergey Khalymon, Sergey Komarov, Eugene MechanisM, Mikalai Radchuk, Alexandr Romantsov, Nikita Viktorovich
+* Slovak (Slovakia): Stevo Backor, dellax
 * Slovenian: Mitja Pagon
 * Spanish: Mauricio Baeza, Daniel Chimeno, fonso, fooflare, Yusuf (Josè) Luis, Joaquín Tita, Unai Zalakain
 * Swedish: Ludwig Kjellström, Thomas Kunambi, Hannes Lohmander
 * Swedish (Sweden): Jon Karlsson, Thomas Kunambi
 * Turkish: Cihad Gündoǧdu
-* Turkish (Turkey): Yusuf (Josè) Luis, Ragıp Ünal
+* Turkish (Turkey): Saadettin Yasir Akel, Cihad Gündoǧdu, Yusuf (Josè) Luis, Ragıp Ünal
 * Ukrainian: Mykola Zamkovoi
 * Vietnamese: Luan Nguyen

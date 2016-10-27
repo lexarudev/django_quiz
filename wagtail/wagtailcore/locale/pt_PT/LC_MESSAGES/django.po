@@ -3,15 +3,15 @@
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Translators:
-# Jose Lourenco <jose@lourenco.ws>, 2014-2015
+# Jose Lourenco <jose@lourenco.ws>, 2014-2016
 # Manuela Silva <inactive+h_manuela_rodsilva@transifex.com>, 2015
 # Tiago Henriques <trinosauro@gmail.com>, 2015-2016
 msgid ""
 msgstr ""
 "Project-Id-Version: Wagtail\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-05-18 21:37+0000\n"
-"PO-Revision-Date: 2016-03-09 21:27+0000\n"
+"POT-Creation-Date: 2016-10-05 16:37+0100\n"
+"PO-Revision-Date: 2016-10-14 13:48+0000\n"
 "Last-Translator: Tiago Henriques <trinosauro@gmail.com>\n"
 "Language-Team: Portuguese (Portugal) (http://www.transifex.com/torchbox/"
 "wagtail/language/pt_PT/)\n"
@@ -21,11 +21,17 @@ msgstr ""
 "Language: pt_PT\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgid "Password"
+msgstr "Senha"
+
+msgid "The password you have entered is not correct. Please try again."
+msgstr "Introduziu uma senha incorreta. Por favor tente novamente."
+
 msgid "hostname"
 msgstr "nome do servidor"
 
 msgid "port"
-msgstr "porta"
+msgstr "porto"
 
 msgid ""
 "Set this to something other than 80 if you need a specific port number to "
@@ -245,3 +251,12 @@ msgstr "permissão"
 
 msgid "group collection permission"
 msgstr "permissão de coleção de grupo"
+
+msgid "Password required"
+msgstr "Senha obrigatória"
+
+msgid "You need a password to access this page."
+msgstr "É preciso uma senha para aceder a esta página."
+
+msgid "Continue"
+msgstr "Continuar"

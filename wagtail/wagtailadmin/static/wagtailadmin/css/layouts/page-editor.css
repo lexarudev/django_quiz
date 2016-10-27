@@ -67,6 +67,16 @@ li.sequence-member .struct-block .sequence-container .sequence-member-inner {
   padding: 1.5em 0;
 }
 
+li.sequence-member .struct-block li.required > label:after {
+  content: '*';
+  color: #cd3238;
+  font-weight: bold;
+  display: inline-block;
+  margin-left: 0.5em;
+  line-height: 1em;
+  font-size: 13px;
+}
+
 li.sequence-member .sequence-member-inner {
   position: relative;
   padding: 1.5em 50px;
@@ -551,6 +561,7 @@ body.ready .stream-menu button {
 .object > h2 {
   -webkit-font-smoothing: auto;
   background: #fcf2f2;
+  color: #200200;
   text-transform: uppercase;
   padding: 0.9em 0 0.9em 4.1em;
   font-size: 0.95em;

@@ -48,7 +48,7 @@ This example represents a typical blog post:
         )
 
 
-        # Search index configuraiton
+        # Search index configuration
 
         search_fields = Page.search_fields + [
             index.SearchField('body'),
@@ -440,6 +440,8 @@ This is because ``Page`` enforces ordering QuerySets by path. Instead, you must 
 
     news_items = NewsItemPage.objects.live().order_by('-publication_date')
 
+.. _custom_page_managers:
+
 Custom Page managers
 --------------------
 
@@ -471,7 +473,9 @@ Alternately, if you only need to add extra ``QuerySet`` methods, you can inherit
             today = timezone.localtime(timezone.now()).date()
             return self.filter(start_date__gte=today)
 
+    EventPageManager = PageManager.from_queryset(EventPageQuerySet)
+
     class EventPage(Page):
         start_date = models.DateField()
 
-        objects = PageManager.from_queryset(EventPageQuerySet)
+        objects = EventPageManager()

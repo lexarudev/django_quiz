@@ -1039,8 +1039,16 @@ body.ready .dl-menu.dl-menu-toggle {
   content: "";
 }
 
+.icon-logout:before {
+  content: "";
+}
+
 .icon-arrow-down-after:after {
   content: "q";
+}
+
+.icon-arrow-up-after:after {
+  content: "e";
 }
 
 .icon-arrow-right-after:after {
@@ -1219,7 +1227,7 @@ dl {
 }
 
 dt {
-  color: #cccccc;
+  color: #b3b3b3;
   text-transform: uppercase;
   font-size: 0.9em;
 }
@@ -1670,7 +1678,7 @@ body.ready .dropdown ul {
   line-height: 1.85;
   border: solid 1px transparent;
   border-radius: 2px;
-  font-size: 11px;
+  font-size: 0.95em;
   cursor: pointer;
   -webkit-font-smoothing: subpixel-antialiased;
   -moz-user-select: none;
@@ -1991,6 +1999,13 @@ label,
   display: inline;
 }
 
+.plain-checkbox-label {
+  float: none;
+  color: inherit;
+  font-weight: inherit;
+  font-size: inherit;
+}
+
 input,
 textarea,
 select,
@@ -2273,6 +2288,8 @@ input[type=checkbox]:checked:before {
   text-align: center;
   background-color: rgba(0, 0, 0, 0.2);
   display: block;
+  border-top-left-radius: inherit;
+  border-bottom-left-radius: inherit;
 }
 
 .button.button-small.bicolor {
@@ -2421,7 +2438,7 @@ body.ready .button.button-longrunning span {
 .button-small {
   padding: 0 0.8em;
   height: 2em;
-  font-size: 0.85em;
+  font-size: 0.95em;
 }
 
 .button-secondary {
@@ -3209,7 +3226,7 @@ ul.listing li {
 
 .listing {
   margin-bottom: 2em;
-  color: #999999;
+  color: gray;
   font-size: 0.95em;
 }
 
@@ -3320,6 +3337,10 @@ body.ready .listing.chooser tbody .title a {
 .listing.chooser tbody tr:hover .title a,
 .listing.chooser tbody tr:hover .title a:hover {
   color: #fff;
+}
+
+.listing.chooser tbody tr:hover .parent a {
+  color: #246060;
 }
 
 .listing.chooser tbody tr:hover .status-tag {
@@ -4059,6 +4080,18 @@ body.ready .listing .children a, body.ready
   border-width: 1px;
   font-size: 14px;
   text-indent: 0.1em;
+}
+
+.avatar.square {
+  border-radius: 0;
+}
+
+.avatar.square img {
+  border-radius: 0;
+}
+
+.avatar.square:before {
+  border-radius: 0;
 }
 
 .avatar.avatar-on-dark:before {
@@ -4894,10 +4927,10 @@ body.ready .nav-main li {
   -webkit-font-smoothing: auto;
   text-decoration: none;
   display: block;
-  color: #aaa;
+  color: #cacaca;
   padding: 0.8em 1.7em;
-  font-size: 0.95em;
-  font-weight: 300;
+  font-size: 1em;
+  font-weight: normal;
 }
 
 body.ready .nav-main a {
@@ -4929,7 +4962,7 @@ body.ready .nav-main a {
   position: absolute;
   right: 0.5em;
   top: 0.5em;
-  margin-top: 0.15em;
+  margin-top: 0;
 }
 
 .nav-main .menu-active {
@@ -4942,23 +4975,21 @@ body.ready .nav-main a {
   color: #fff;
 }
 
-.nav-main .account:before, .nav-main .account:after {
-  content: ' ';
-  display: table;
+.nav-main .footer-submenu a {
+  border-left: 3px solid transparent;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.nav-main .account:after {
-  clear: both;
+.nav-main .footer-submenu a:before {
+  font-size: 1rem;
+  margin-right: 0.5em;
+  vertical-align: -10%;
 }
 
-.nav-main .account .avatar {
+.nav-main .account {
   display: none;
-}
-
-.nav-main .account em {
-  font-style: normal;
-  float: left;
-  width: 100%;
 }
 
 .nav-submenu {
@@ -4986,8 +5017,13 @@ body.ready .nav-main a {
   border: 0;
 }
 
+.nav-submenu .wagtail-version {
+  padding: 1.2em 1.7em;
+  text-align: center;
+}
+
 .explorer {
-  font-size: 0.95em;
+  font-size: 1em;
 }
 
 .nav-search {
@@ -5027,7 +5063,7 @@ body.ready .nav-main a {
   cursor: pointer;
   border: 1px solid #4d4d4d;
   background-color: #404040;
-  color: #aaa;
+  color: #cacaca;
   padding: 0.8em 2.5em 0.8em 1em;
 }
 
@@ -5141,17 +5177,30 @@ body.explorer-open .explorer-close {
   .nav-main {
     position: absolute;
     top: 175px;
-    margin-bottom: 116px;
+    margin-bottom: 127px;
   }
   .nav-main .footer {
-    padding-top: 1em;
     position: fixed;
-    width: 173px;
+    width: 180px;
     bottom: 0;
   }
+  .nav-main .footer-open .footer-submenu {
+    max-height: 127px;
+  }
+  .nav-main .footer-submenu {
+    background-color: #262626;
+    overflow: hidden;
+    max-height: 0;
+  }
+  body.ready .nav-main .footer-submenu {
+    transition: max-height 0.2s ease;
+  }
   .nav-main .account {
-    padding-right: 0;
-    padding-left: 15px;
+    background: #1a1a1a;
+    color: #cacaca;
+    text-transform: uppercase;
+    display: block;
+    cursor: pointer;
   }
   .nav-main .account:before, .nav-main .account:after {
     content: ' ';
@@ -5160,18 +5209,36 @@ body.explorer-open .explorer-close {
   .nav-main .account:after {
     clear: both;
   }
+  .nav-main .account:hover {
+    outline: none;
+    background-color: rgba(100, 100, 100, 0.15);
+    color: #fff;
+    text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.3);
+  }
   .nav-main .account .avatar {
-    display: inline-block;
-    padding: 0;
-    margin: 0 0.7em 0 0;
-    border: 0;
     float: left;
+    margin-right: 0.9em;
   }
   .nav-main .account .avatar:before {
-    text-shadow: none;
+    color: inherit;
+    border-color: inherit;
   }
   .nav-main .account em {
-    width: 120px;
+    box-sizing: border-box;
+    padding-right: 1.8em;
+    margin-top: 1.2em;
+    font-style: normal;
+    font-weight: 700;
+    width: 110px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    float: left;
+  }
+  .nav-main .account em:after {
+    font-size: 1.5em;
+    position: absolute;
+    right: 0.25em;
   }
   .nav-main a.submenu-trigger:after {
     content: 'n';
@@ -5200,7 +5267,7 @@ body.explorer-open .explorer-close {
     font-weight: 500;
     text-transform: none;
     text-align: center;
-    color: #aaa;
+    color: #cacaca;
   }
   .nav-submenu h2:before {
     font-size: 4em;
@@ -5209,6 +5276,9 @@ body.explorer-open .explorer-close {
     margin: 0 0 0.2em;
     width: 100%;
     opacity: 0.15;
+  }
+  .nav-submenu .footer {
+    position: absolute;
   }
   li.submenu-active {
     background: #262626;

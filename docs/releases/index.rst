@@ -4,21 +4,15 @@ Release notes
 .. toctree::
    :maxdepth: 1
 
-<<<<<<< 1c954865923ea6a77401c17a0303c9d20fdeaffc
+   1.8
+   1.7
+   1.6.3
+   1.6.2
+   1.6.1
+   1.6
    1.5.3
    1.5.2
    1.5.1
-=======
-   1.6
-<<<<<<< c2e9e268eddbf63e0aea2fe79abecee40b6ec3db
-<<<<<<< a38a25ecb719d74297be29526a01a19e7468bfb8
->>>>>>> Version bump to start work on 1.6
-=======
-=======
-   1.5.2
->>>>>>> Release note for 1.5.2
-   1.5.1
->>>>>>> Add docs / changelog section for Wagtail 1.5.1
    1.5
    1.4.6
    1.4.5
