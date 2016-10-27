@@ -1039,8 +1039,16 @@ body.ready .dl-menu.dl-menu-toggle {
   content: "";
 }
 
+.icon-logout:before {
+  content: "";
+}
+
 .icon-arrow-down-after:after {
   content: "q";
+}
+
+.icon-arrow-up-after:after {
+  content: "e";
 }
 
 .icon-arrow-right-after:after {
@@ -1670,7 +1678,7 @@ body.ready .dropdown ul {
   line-height: 1.85;
   border: solid 1px transparent;
   border-radius: 2px;
-  font-size: 11px;
+  font-size: 0.95em;
   cursor: pointer;
   -webkit-font-smoothing: subpixel-antialiased;
   -moz-user-select: none;
@@ -3331,6 +3339,10 @@ body.ready .listing.chooser tbody .title a {
   color: #fff;
 }
 
+.listing.chooser tbody tr:hover .parent a {
+  color: #246060;
+}
+
 .listing.chooser tbody tr:hover .status-tag {
   border-color: #fff;
 }
@@ -4068,6 +4080,18 @@ body.ready .listing .children a, body.ready
   border-width: 1px;
   font-size: 14px;
   text-indent: 0.1em;
+}
+
+.avatar.square {
+  border-radius: 0;
+}
+
+.avatar.square img {
+  border-radius: 0;
+}
+
+.avatar.square:before {
+  border-radius: 0;
 }
 
 .avatar.avatar-on-dark:before {
@@ -4951,23 +4975,21 @@ body.ready .nav-main a {
   color: #fff;
 }
 
-.nav-main .account:before, .nav-main .account:after {
-  content: ' ';
-  display: table;
+.nav-main .footer-submenu a {
+  border-left: 3px solid transparent;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
-.nav-main .account:after {
-  clear: both;
+.nav-main .footer-submenu a:before {
+  font-size: 1rem;
+  margin-right: 0.5em;
+  vertical-align: -10%;
 }
 
-.nav-main .account .avatar {
+.nav-main .account {
   display: none;
-}
-
-.nav-main .account em {
-  font-style: normal;
-  float: left;
-  width: 100%;
 }
 
 .nav-submenu {
@@ -5155,17 +5177,30 @@ body.explorer-open .explorer-close {
   .nav-main {
     position: absolute;
     top: 175px;
-    margin-bottom: 116px;
+    margin-bottom: 127px;
   }
   .nav-main .footer {
-    padding-top: 1em;
     position: fixed;
-    width: 173px;
+    width: 180px;
     bottom: 0;
   }
+  .nav-main .footer-open .footer-submenu {
+    max-height: 127px;
+  }
+  .nav-main .footer-submenu {
+    background-color: #262626;
+    overflow: hidden;
+    max-height: 0;
+  }
+  body.ready .nav-main .footer-submenu {
+    transition: max-height 0.2s ease;
+  }
   .nav-main .account {
-    padding-right: 0;
-    padding-left: 15px;
+    background: #1a1a1a;
+    color: #cacaca;
+    text-transform: uppercase;
+    display: block;
+    cursor: pointer;
   }
   .nav-main .account:before, .nav-main .account:after {
     content: ' ';
@@ -5174,18 +5209,36 @@ body.explorer-open .explorer-close {
   .nav-main .account:after {
     clear: both;
   }
+  .nav-main .account:hover {
+    outline: none;
+    background-color: rgba(100, 100, 100, 0.15);
+    color: #fff;
+    text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.3);
+  }
   .nav-main .account .avatar {
-    display: inline-block;
-    padding: 0;
-    margin: 0 0.7em 0 0;
-    border: 0;
     float: left;
+    margin-right: 0.9em;
   }
   .nav-main .account .avatar:before {
-    text-shadow: none;
+    color: inherit;
+    border-color: inherit;
   }
   .nav-main .account em {
-    width: 120px;
+    box-sizing: border-box;
+    padding-right: 1.8em;
+    margin-top: 1.2em;
+    font-style: normal;
+    font-weight: 700;
+    width: 110px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    float: left;
+  }
+  .nav-main .account em:after {
+    font-size: 1.5em;
+    position: absolute;
+    right: 0.25em;
   }
   .nav-main a.submenu-trigger:after {
     content: 'n';
