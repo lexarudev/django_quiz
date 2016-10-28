@@ -64,15 +64,21 @@ def browse(request, parent_page_id=None):
     # Find parent page
     if parent_page_id:
         parent_page = get_page_if_choosable(parent_page_id, request)
-    elif desired_classes == (Page,):
-        # Just use the root page
+    else:
         parent_page = Page.get_first_root_node()
-    else: #@jchau: previous custom ADS functionality checked for lack of superuser privs before finding CCA
-        # Find the highest common ancestor for the specific classes passed in
-        # In many cases, such as selecting an EventPage under an EventIndex,
-        # this will help the administrator find their page quicker.
-        all_desired_pages = filter_page_type(Page.objects.all(), desired_classes)
-        parent_page = all_desired_pages.first_common_ancestor()
+        if not request.user.is_superuser:
+            cca_path = get_closest_common_ancestor_path(request, choosable=True)
+            if cca_path:
+                parent_page = Page.objects.get(path=cca_path)
+        elif desired_classes == (Page,):
+            # Just use the root page
+            pass
+        else:
+            # Find the highest common ancestor for the specific classes passed in
+            # In many cases, such as selecting an EventPage under an EventIndex,
+            # this will help the administrator find their page quicker.
+            all_desired_pages = filter_page_type(Page.objects.all(), desired_classes)
+            parent_page = all_desired_pages.first_common_ancestor()
 
     # Include only the choosable children in the unfiltered page queryset.
     pages = parent_page.get_choosable_children(request).prefetch_related('content_type')

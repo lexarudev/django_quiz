@@ -1594,67 +1594,6 @@ def _filter_permitted_pages(queryset, request, include_ancestors=True, choosable
         return queryset.none()
 
 
-def get_navigation_menu_items(request):
-    # Get all pages that appear in the navigation menu: ones which have children,
-    # or are at the top-level (this rule is required so that a freshly made site has a working menu out-of-the-box).
-    pages = Page.objects.filter(Q(depth=2) | Q(numchild__gt=0)).order_by('path')
-
-    # We need to treat the top of the current user's explorable tree as if it were depth=2, or the depth_list algorithm
-    # won't work. So if a user isn't permitted to see pages at or below depth 2, we must change the apparent depth of
-    # each of their explorable pages.
-    depth_change = 0
-
-    # Limit the listing to only the current user's explorable pages. Always include the Root page, even if it's
-    # not an explorable path, since it's required for the depth_list algorithm.
-    pages = filter_explorable_pages(pages, request) | Page.objects.filter(depth=1)
-
-    # filter_explorable_pages() already called this, but we need the permitted_paths and required_ancestors values
-    # for further processing. get_explorable_page_paths() is cached, though, so there's no redundant DB query.
-    permitted_paths, required_ancestors = get_explorable_page_paths(request)
-    if not request.user.is_superuser and permitted_paths:
-        # Find the depth of the Closest Common Ancestor.
-        cca_depth = len(required_ancestors[0]) / Page.steplen
-        # Alter depth_change if needed.
-        if cca_depth > 2:
-            depth_change = cca_depth - 2
-
-    # Turn 'pages' into a tree structure:
-    #     tree_node = (page, children)
-    #     where 'children' is a list of tree_nodes.
-    # Algorithm:
-    # Maintain a list that tells us, for each depth level, the last page we saw at that depth level.
-    # Since our page list is ordered by path, we know that whenever we see a page
-    # at depth d, its parent must be the last page we saw at depth (d-1), and so we can
-    # find it in that list.
-
-    depth_list = [(None, [])]  # a dummy node for depth=0, since one doesn't exist in the DB
-
-    for page in pages:
-        # Change the depth of all but the Root page.
-        depth = page.depth if page.depth == 1 else page.depth - depth_change
-        # Create a node for this page.
-        node = (page, [])
-        # Retrieve the parent's child listing from depth_list, and insert this new node into it.
-        parent_page, parent_childlist = depth_list[depth - 1]
-        parent_childlist.append(node)
-
-        # Add the new node to depth_list.
-        try:
-            depth_list[depth] = node
-        except IndexError:
-            # An exception here means that this node is one level deeper than any we've seen so far.
-            depth_list.append(node)
-
-    # In Wagtail, the convention is to have one root node in the db (depth=1); the menu proper
-    # begins with the children of that node (depth=2).
-    try:
-        root, root_children = depth_list[1]
-        return root_children
-    except IndexError:
-        # What, we don't even have a root node? Fine, just return an empty list...
-        return []
-
-
 @receiver(pre_delete, sender=Page)
 def unpublish_page_before_delete(sender, instance, **kwargs):
     # Make sure pages are unpublished before deleting
