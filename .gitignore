@@ -13,6 +13,7 @@
 npm-debug.log
 *.idea/
 /*.egg/
+/settings.py
 
 ### JetBrains
 .idea/
