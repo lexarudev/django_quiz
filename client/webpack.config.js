@@ -1,10 +1,7 @@
 const path = require('path');
 
 // Generates a path to the output bundle to be loaded in the browser.
-const getOutputPath = (app, filename) => {
-  const appLabel = (app === 'documents' ? 'wagtaildocs' : `wagtail${app}`);
-  return path.join('wagtail', app, 'static', appLabel, 'js', filename);
-};
+const getOutputPath = (app, filename) => path.join('wagtail', app, 'static', `wagtail${app}`, 'js', filename);
 
 // Mapping from package name to exposed global variable.
 const exposedDependencies = {
@@ -46,10 +43,7 @@ module.exports = function exports() {
     ],
     images: [
       'image-chooser',
-    ],
-    documents: [
-      'document-chooser',
-    ],
+    ]
   };
 
   const entry = {};
