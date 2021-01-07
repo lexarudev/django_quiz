@@ -22,40 +22,30 @@ class AdminSnippetChooser(AdminChooser):
 
         super().__init__(**kwargs)
 
-    def get_value_data(self, value):
-        if value is None:
-            return None
-        elif isinstance(value, self.target_model):
-            instance = value
-        else:  # assume instance ID
-            instance = self.target_model.objects.get(pk=value)
+    def render_html(self, name, value, attrs):
+        instance, value = self.get_instance_and_id(self.target_model, value)
 
-        app_label = self.target_model._meta.app_label
-        model_name = self.target_model._meta.model_name
-        quoted_id = quote(instance.pk)
-        edit_url = reverse('wagtailsnippets:edit', args=[app_label, model_name, quoted_id])
+        original_field_html = super().render_html(name, value, attrs)
 
-        return {
-            'id': instance.pk,
-            'string': str(instance),
-            'edit_url': edit_url,
-        }
-
-    def render_html(self, name, value_data, attrs):
-        value_data = value_data or {}
-
-        original_field_html = super().render_html(name, value_data.get('id'), attrs)
+        if instance:
+            app_label = self.target_model._meta.app_label
+            model_name = self.target_model._meta.model_name
+            quoted_id = quote(instance.pk)
+            edit_url = reverse('wagtailsnippets:edit', args=[app_label, model_name, quoted_id])
+        else:
+            edit_url = ''
 
         return render_to_string("wagtailsnippets/widgets/snippet_chooser.html", {
             'widget': self,
+            'model_opts': self.target_model._meta,
             'original_field_html': original_field_html,
             'attrs': attrs,
-            'value': bool(value_data),  # only used by chooser.html to identify blank values
-            'display_title': value_data.get('string', ''),
-            'edit_url': value_data.get('edit_url', ''),
+            'value': value,
+            'display_title': str(instance) if instance else '',
+            'edit_url': edit_url,
         })
 
-    def render_js_init(self, id_, name, value_data):
+    def render_js_init(self, id_, name, value):
         model = self.target_model
 
         return "createSnippetChooser({id}, {model});".format(
