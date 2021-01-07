@@ -28,7 +28,7 @@ function createPageChooser(id, openAtParentId, config) {
   /* define public API functions for the chooser */
   const chooser = {
     getState: () => state,
-    getValue: () => state && state.id,
+    getValue: () => state.id,
     setState: (newState) => {
       if (newState) {
         input.val(newState.id);
