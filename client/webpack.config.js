@@ -41,9 +41,6 @@ module.exports = function exports() {
       'workflow-action',
       'workflow-status',
     ],
-    images: [
-      'image-chooser',
-    ]
   };
 
   const entry = {};

@@ -1,4 +1,3 @@
-/* eslint-disable */
 function createImageChooser(id) {
     var chooserElement = $('#' + id + '-chooser');
     var previewImage = chooserElement.find('.preview-image img');
@@ -31,4 +30,3 @@ function createImageChooser(id) {
         chooserElement.addClass('blank');
     });
 }
-window.createImageChooser = createImageChooser;
