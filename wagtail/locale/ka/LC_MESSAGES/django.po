@@ -10,6 +10,20 @@ msgstr ""
 "#-#-#-#-#  django.po (Wagtail)  #-#-#-#-#\n"
 "Project-Id-Version: Wagtail\n"
 "Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-07-13 13:36+0100\n"
+"PO-Revision-Date: 2021-07-13 12:37+0000\n"
+"Last-Translator: Matt Westcott <matthew@torchbox.com>\n"
+"Language-Team: Georgian (http://www.transifex.com/torchbox/wagtail/language/"
+"ka/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ka\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+"#-#-#-#-#  django.po (Wagtail)  #-#-#-#-#\n"
+"#-#-#-#-#  django.po (Wagtail)  #-#-#-#-#\n"
+"Project-Id-Version: Wagtail\n"
+"Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2021-07-13 13:35+0100\n"
 "PO-Revision-Date: 2021-07-13 12:37+0000\n"
 "Last-Translator: André Bouatchidzé <a@anbz.net>\n"
@@ -34,14 +48,8 @@ msgstr ""
 "Language: ka\n"
 "Plural-Forms: nplurals=2; plural=(n!=1);\n"
 
-msgid "Publish"
-msgstr "გამოქვეყნება"
-
-msgid "Delete"
-msgstr "წაშლა"
-
-msgid "Content"
-msgstr "შიგთავსი"
+msgid "Email"
+msgstr "ელფოსტა"
 
 msgid "First Name"
 msgstr "სახელი"
@@ -49,8 +57,65 @@ msgstr "სახელი"
 msgid "Last Name"
 msgstr "გვარი"
 
-msgid "Email"
-msgstr "ელფოსტა"
+msgid "Password"
+msgstr "პაროლი"
+
+msgid "Administrator"
+msgstr "ადმინისტრატორი"
+
+msgid "Delete group"
+msgstr "ჯგუფის წაშლა"
+
+msgid "Add group"
+msgstr "ჯგუფის დამატება"
+
+msgid "Save"
+msgstr "შენახვა"
+
+msgid "Add"
+msgstr "დამატება"
+
+msgid "Change"
+msgstr "შეცვლა"
+
+msgid "Delete"
+msgstr "წაშლა"
+
+msgid "Page"
+msgstr "გვერდი"
+
+msgid "groups"
+msgstr "ჯგუფები"
+
+msgid "Account"
+msgstr "ანგარიში"
+
+msgid "Roles"
+msgstr "როლები"
+
+msgid "Users"
+msgstr "მომხმარებლები"
+
+msgid "Add a user"
+msgstr "მომხმარებლის დამატება"
+
+msgid "Status"
+msgstr "სტატუსი"
+
+msgid "Active"
+msgstr "აქტიური"
+
+msgid "Groups"
+msgstr "ჯგუფები"
+
+msgid "Edit"
+msgstr "რედაქტირება"
+
+msgid "Publish"
+msgstr "გამოქვეყნება"
+
+msgid "Content"
+msgstr "შიგთავსი"
 
 msgid "Enter password"
 msgstr "შეიყვანეთ პაროლი"
@@ -67,18 +132,6 @@ msgstr "ძიება"
 
 msgid "Search term"
 msgstr "ძიების ტერმინი"
-
-msgid "Edit"
-msgstr "რედაქტირება"
-
-msgid "Page"
-msgstr "გვერდი"
-
-msgid "Save"
-msgstr "შენახვა"
-
-msgid "Account"
-msgstr "ანგარიში"
 
 msgid "Reset password"
 msgstr "პაროლის აღდგენა"
@@ -103,9 +156,6 @@ msgstr "ამ გვერდის რედაქტირება"
 
 msgid "Type"
 msgstr "ტიპი"
-
-msgid "Status"
-msgstr "სტატუსი"
 
 msgid "Date"
 msgstr "თარიღი"
@@ -134,23 +184,14 @@ msgstr "შემდეგი"
 msgid "Log out"
 msgstr "გამოსვლა"
 
-msgid "Password"
-msgstr "პაროლი"
-
 msgid "Choose another page"
 msgstr "სხვა გვერდის არჩევა"
-
-msgid "Add"
-msgstr "დამატება"
 
 msgid "page"
 msgstr "გვერდი"
 
 msgid "pages"
 msgstr "გვერდები"
-
-msgid "groups"
-msgstr "ჯგუფები"
 
 msgid "site"
 msgstr "საიტი"

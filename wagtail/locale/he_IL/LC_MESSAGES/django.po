@@ -4,6 +4,15 @@
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Translators:
+# lior abazon <abazon@v15.org.il>, 2015
+# yossi lalum <lyosefh@gmail.com>, 2017
+# #-#-#-#-#  django.po (Wagtail)  #-#-#-#-#
+# #-#-#-#-#  django.po (Wagtail)  #-#-#-#-#
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Translators:
 # Adi Ron <adi@bnop.co>, 2019
 # 2ba49a64a97dc0c30b67cbb6522d98c8_d0a1309 <5628a6f4d3ab86b48aef276247790766_814>, 2015
 # lior abazon <abazon@v15.org.il>, 2015
@@ -19,6 +28,21 @@
 #, fuzzy
 msgid ""
 msgstr ""
+"#-#-#-#-#  django.po (Wagtail)  #-#-#-#-#\n"
+"Project-Id-Version: Wagtail\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2021-07-13 13:36+0100\n"
+"PO-Revision-Date: 2021-07-13 12:37+0000\n"
+"Last-Translator: Matt Westcott <matthew@torchbox.com>\n"
+"Language-Team: Hebrew (Israel) (http://www.transifex.com/torchbox/wagtail/"
+"language/he_IL/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: he_IL\n"
+"Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n == 2 && n % "
+"1 == 0) ? 1: (n % 10 == 0 && n % 1 == 0 && n > 10) ? 2 : 3;\n"
+"#-#-#-#-#  django.po (Wagtail)  #-#-#-#-#\n"
 "#-#-#-#-#  django.po (Wagtail)  #-#-#-#-#\n"
 "Project-Id-Version: Wagtail\n"
 "Report-Msgid-Bugs-To: \n"
@@ -48,6 +72,214 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n == 1 && n % 1 == 0) ? 0 : (n == 2 && n % "
 "1 == 0) ? 1: (n % 10 == 0 && n % 1 == 0 && n > 10) ? 2 : 3;\n"
 
+msgid "Required. 30 characters or fewer. Letters, digits and @/./+/-/_ only."
+msgstr "נחוץ. 30 תווים או פחות. אותיות, ספרות ו @/./+/-/_  בלבד"
+
+msgid "This value may contain only letters, numbers and @/./+/-/_ characters."
+msgstr "ערך זה יכול להכיל אותיות, ספרות והתווים @/./+/-/_  בלבד"
+
+msgid "A user with that username already exists."
+msgstr "שם משתמש קיים במערכת"
+
+msgid "The two password fields didn't match."
+msgstr "שתי הסיסמאות לא מתאימות"
+
+msgid "Email"
+msgstr "דואר אלקטרוני"
+
+msgid "First Name"
+msgstr "שם פרטי"
+
+msgid "Last Name"
+msgstr "שם משפחה"
+
+msgid "Password"
+msgstr "סיסמא"
+
+msgid "Leave blank if not changing."
+msgstr "השאירו ריק אם לא משנים"
+
+msgid "Password confirmation"
+msgstr "אישור סיסמא"
+
+msgid "Enter the same password as above, for verification."
+msgstr "הכניסו אותה סיסמא שוב, עבור וידוא"
+
+msgid "Administrator"
+msgstr "מנהל"
+
+msgid "Administrators have full access to manage any object or setting."
+msgstr "למנהלים יש גישה מלאה לניהול כל אובייקט או הגדרה"
+
+msgid "A group with that name already exists."
+msgstr "קבוצה בשם זה כבר קיימת"
+
+msgid "You cannot have multiple permission records for the same page."
+msgstr "לא יכולה להיות לך יותר מרשומה אחת של הרשאות לאותו הדף"
+
+msgid "submitted notifications"
+msgstr "הודעות שנשלחו"
+
+msgid "Receive notification when a page is submitted for moderation"
+msgstr "קבלו התראה כשהעמוד הוזן לעריכה"
+
+msgid "approved notifications"
+msgstr "הודעות שאושרו"
+
+msgid "Receive notification when your page edit is approved"
+msgstr "קבלו התראה כשעריכת העמוד אושרה"
+
+msgid "rejected notifications"
+msgstr "הודעות שנדחו"
+
+msgid "Receive notification when your page edit is rejected"
+msgstr "קבלו התראה כשעריכת העמוד נדחית"
+
+msgid "user profile"
+msgstr "פרופיל משתמש"
+
+msgid "Delete group"
+msgstr "מחק קבוצה"
+
+msgid ""
+"Deleting this group will revoke this group's permissions from all member "
+"users."
+msgstr "מחיקת קבוצה זו תשלול את ההרשאות עבור כל חבריה"
+
+msgid "Are you sure you want to delete this group?"
+msgstr "האם אתם בטוחים כי ברצונכם למחוק קבוצה זו?"
+
+msgid "Yes, delete"
+msgstr "כן, מחק"
+
+msgid "Add group"
+msgstr "הוסף קבוצה"
+
+msgid "Editing"
+msgstr "עריכה"
+
+msgid "Save"
+msgstr "שמור"
+
+msgid "Object permissions"
+msgstr "הרשאות אובייקט"
+
+msgid "Name"
+msgstr "שם"
+
+#, fuzzy
+msgid "Add"
+msgstr ""
+"#-#-#-#-#  django.po (Wagtail)  #-#-#-#-#\n"
+"הוסף\n"
+"#-#-#-#-#  django.po (Wagtail)  #-#-#-#-#\n"
+"הוספה"
+
+msgid "Change"
+msgstr "שנה"
+
+msgid "Delete"
+msgstr "מחק"
+
+msgid "Other permissions"
+msgstr "הרשאות אחרות "
+
+msgid "Page permissions"
+msgstr "הרשאות עמוד "
+
+msgid "Page"
+msgstr "עמוד"
+
+msgid "Add a page permission"
+msgstr "הוספת הרשאת עמוד"
+
+msgid "groups"
+msgstr "קבוצות"
+
+msgid "Add a group"
+msgstr "הוספת קבוצה"
+
+msgid "Delete user"
+msgstr "מחק משתמש"
+
+msgid "Are you sure you want to delete this user?"
+msgstr "האם אתה בטוח שברצונך למחוק משתמש זה?"
+
+msgid "Add user"
+msgstr "הוספת משתמש"
+
+msgid "Account"
+msgstr "חשבון"
+
+msgid "Roles"
+msgstr "תפקידים"
+
+msgid "Users"
+msgstr "משתמשים"
+
+msgid "Add a user"
+msgstr "הוספת משתמש"
+
+msgid "Username"
+msgstr "שם משתמש"
+
+msgid "Level"
+msgstr "רמה"
+
+msgid "Status"
+msgstr "מצב"
+
+msgid "Admin"
+msgstr "מנהל"
+
+msgid "Active"
+msgstr "מופעל"
+
+msgid "Inactive"
+msgstr "כבוי"
+
+msgid "Groups"
+msgstr "קבוצות "
+
+msgid "Search groups"
+msgstr "חיפוש קבוצות"
+
+msgid "Group '{0}' created."
+msgstr "קבוצה '{0}' נוצרה"
+
+msgid "Group '{0}' updated."
+msgstr "קבוצה '{0}' עודכנה"
+
+msgid "The group could not be saved due to errors."
+msgstr "לא ניתן לשמור את הקבוצה עקב שגיאות"
+
+msgid "Group '{0}' deleted."
+msgstr "קבוצה '{0}' נמחקה"
+
+msgid "Search users"
+msgstr "חיפוש משתמשים"
+
+msgid "User '{0}' created."
+msgstr "משתמש '{0}' נוצר"
+
+msgid "Edit"
+msgstr "ערוך"
+
+msgid "The user could not be created due to errors."
+msgstr "לא ניתן ליצור את המשתמש עקב שגיאה"
+
+msgid "User '{0}' updated."
+msgstr "משתמש '{0}' עודכן "
+
+msgid "The user could not be saved due to errors."
+msgstr "לא ניתן לשמור את המשתמש עקב שגיאות"
+
+msgid "Edit this user"
+msgstr "ערוך משתמש זה"
+
+msgid "Delete this user"
+msgstr "מחק משתמש זה"
+
 msgid "Publish"
 msgstr "פרסם"
 
@@ -56,9 +288,6 @@ msgstr "שלח לעריכה"
 
 msgid "Unpublish"
 msgstr "ביטול פרסום"
-
-msgid "Delete"
-msgstr "מחק"
 
 msgid "Page locked"
 msgstr "עמוד נעול"
@@ -86,15 +315,6 @@ msgstr "קידום"
 
 msgid "Settings"
 msgstr "הגדרות"
-
-msgid "First Name"
-msgstr "שם פרטי"
-
-msgid "Last Name"
-msgstr "שם משפחה"
-
-msgid "Email"
-msgstr "דואר אלקטרוני"
 
 msgid "Enter password"
 msgstr "הזינו סיסמה"
@@ -186,31 +406,14 @@ msgstr "ערך לחיפוש"
 msgid "This field is required."
 msgstr "שדה חובה"
 
-#, fuzzy
-msgid "Edit"
-msgstr ""
-"#-#-#-#-#  django.po (Wagtail)  #-#-#-#-#\n"
-"עריכה\n"
-"#-#-#-#-#  django.po (Wagtail)  #-#-#-#-#\n"
-"ערוך"
-
-msgid "Page"
-msgstr "עמוד"
-
 msgid "Pages"
 msgstr "עמודים"
-
-msgid "Save"
-msgstr "שמור"
 
 msgid "Dashboard"
 msgstr "לוח מחוונים"
 
 msgid "Edit your account"
 msgstr "ערכו את חשבונכם"
-
-msgid "Account"
-msgstr "חשבון"
 
 msgid "Change password"
 msgstr "שינוי סיסמה"
@@ -279,9 +482,6 @@ msgstr "ציבורי"
 msgid "Private"
 msgstr "פרטי"
 
-msgid "Name"
-msgstr "שם"
-
 #, python-format
 msgid "Add %(label)s"
 msgstr "הוסף %(label)s "
@@ -301,9 +501,6 @@ msgstr ""
 "עברו מטה\n"
 "#-#-#-#-#  django.po (Wagtail)  #-#-#-#-#\n"
 "העבר מטה"
-
-msgid "Yes, delete"
-msgstr "כן, מחק"
 
 msgid "Update"
 msgstr "עדכן"
@@ -349,9 +546,6 @@ msgstr "תצוגה מקדימה"
 
 msgid "Your most recent edits"
 msgstr "עריכות אחרונות"
-
-msgid "Status"
-msgstr "מצב"
 
 msgid "Date"
 msgstr "תאריך"
@@ -621,12 +815,6 @@ msgstr "לייב + טיוטה"
 msgid "draft"
 msgstr "טיוטה"
 
-msgid "Password"
-msgstr "סיסמא"
-
-msgid "Editing"
-msgstr "עריכה"
-
 msgid "Page '{0}' and {1} subpages copied."
 msgstr "עמוד {0} ותת העמודים {1} הועתקו "
 
@@ -696,9 +884,6 @@ msgstr "ערוך פריט זה"
 msgid "Choose another page"
 msgstr "בחרו עמוד נוסף"
 
-msgid "Add"
-msgstr "הוספה"
-
 msgid "The page title as you'd like it to be seen by the public"
 msgstr "כותרת העמוד כפי שתרצו שתוצג בציבור"
 
@@ -723,9 +908,6 @@ msgstr "הוספת/עריכת דפים שאתה הבעלים שלהם"
 
 msgid "Publish any page"
 msgstr "פרסום כל עמוד"
-
-msgid "groups"
-msgstr "קבוצות"
 
 msgid "default"
 msgstr "ברירת מחדל"
