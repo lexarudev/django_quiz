@@ -1,8 +1,8 @@
 from bs4 import BeautifulSoup
 from django.test import TestCase
 
-from wagtail.documents.rich_text import DocumentLinkHandler as FrontendDocumentLinkHandler
-from wagtail.documents.rich_text.editor_html import \
+from wagtail.contrib.documents.rich_text import DocumentLinkHandler as FrontendDocumentLinkHandler
+from wagtail.contrib.documents.rich_text.editor_html import \
     DocumentLinkHandler as EditorHtmlDocumentLinkHandler
 
 

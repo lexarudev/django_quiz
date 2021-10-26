@@ -15,13 +15,13 @@ from wagtail.admin.navigation import get_site_for_user
 from wagtail.admin.rich_text import HalloPlugin
 from wagtail.admin.search import SearchArea
 from wagtail.admin.site_summary import SummaryItem
-from wagtail.documents import admin_urls, get_document_model
-from wagtail.documents.api.admin.views import DocumentsAdminAPIViewSet
-from wagtail.documents.forms import GroupDocumentPermissionFormSet
-from wagtail.documents.permissions import permission_policy
-from wagtail.documents.rich_text import DocumentLinkHandler
-from wagtail.documents.rich_text.contentstate import ContentstateDocumentLinkConversionRule
-from wagtail.documents.rich_text.editor_html import EditorHTMLDocumentLinkConversionRule
+from wagtail.contrib.documents import admin_urls, get_document_model
+from wagtail.contrib.documents.api.admin.views import DocumentsAdminAPIViewSet
+from wagtail.contrib.documents.forms import GroupDocumentPermissionFormSet
+from wagtail.contrib.documents.permissions import permission_policy
+from wagtail.contrib.documents.rich_text import DocumentLinkHandler
+from wagtail.contrib.documents.rich_text.contentstate import ContentstateDocumentLinkConversionRule
+from wagtail.contrib.documents.rich_text.editor_html import EditorHTMLDocumentLinkConversionRule
 from wagtail.models import BaseViewRestriction
 from wagtail.wagtail_hooks import require_wagtail_login
 

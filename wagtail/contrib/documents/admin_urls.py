@@ -1,6 +1,6 @@
 from django.urls import path
 
-from wagtail.documents.views import chooser, documents, multiple
+from wagtail.contrib.documents.views import chooser, documents, multiple
 
 
 app_name = 'wagtaildocs'

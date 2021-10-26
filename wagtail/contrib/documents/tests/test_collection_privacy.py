@@ -3,7 +3,7 @@ from django.core.files.base import ContentFile
 from django.test import TestCase
 from django.urls import reverse
 
-from wagtail.documents.models import Document
+from wagtail.contrib.documents.models import Document
 from wagtail.models import Collection, CollectionViewRestriction
 from wagtail.test.utils import WagtailTestUtils
 

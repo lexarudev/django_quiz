@@ -10,9 +10,9 @@ from wagtail import hooks
 from wagtail.admin.auth import PermissionPolicyChecker
 from wagtail.admin.forms.search import SearchForm
 from wagtail.admin.modal_workflow import render_modal_workflow
-from wagtail.documents import get_document_model
-from wagtail.documents.forms import get_document_form
-from wagtail.documents.permissions import permission_policy
+from wagtail.contrib.documents import get_document_model
+from wagtail.contrib.documents.forms import get_document_form
+from wagtail.contrib.documents.permissions import permission_policy
 from wagtail.search import index as search_index
 
 

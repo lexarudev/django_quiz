@@ -1,5 +1,5 @@
-from wagtail.documents import get_document_model
-from wagtail.documents.models import Document
+from wagtail.contrib.documents import get_document_model
+from wagtail.contrib.documents.models import Document
 from wagtail.permission_policies.collections import CollectionOwnershipPermissionPolicy
 
 

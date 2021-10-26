@@ -6,8 +6,9 @@ from django.db import transaction
 from django.test import TestCase, TransactionTestCase
 from django.test.utils import override_settings
 
+from wagtail.contrib.documents import (
+    get_document_model, get_document_model_string, models, signal_handlers)
 from wagtail.contrib.images.tests.utils import get_test_image_file
-from wagtail.documents import get_document_model, get_document_model_string, models, signal_handlers
 from wagtail.models import Collection, GroupCollectionPermission
 from wagtail.test.testapp.models import CustomDocument, ReimportedDocumentModel
 from wagtail.test.utils import WagtailTestUtils
@@ -244,7 +245,7 @@ class TestGetDocumentModel(WagtailTestUtils, TestCase):
     def test_standard_get_document_model(self):
         """Test get_document_model with no WAGTAILDOCS_DOCUMENT_MODEL"""
         del settings.WAGTAILDOCS_DOCUMENT_MODEL
-        from wagtail.documents.models import Document
+        from wagtail.contrib.documents.models import Document
         self.assertIs(get_document_model(), Document)
 
     @override_settings()

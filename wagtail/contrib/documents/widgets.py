@@ -8,7 +8,7 @@ from django.utils.translation import gettext_lazy as _
 
 from wagtail.admin.staticfiles import versioned_static
 from wagtail.admin.widgets import AdminChooser
-from wagtail.documents import get_document_model
+from wagtail.contrib.documents import get_document_model
 from wagtail.utils.telepath import register
 from wagtail.widget_adapters import WidgetAdapter
 
@@ -61,7 +61,7 @@ class AdminDocumentChooser(AdminChooser):
 
 
 class DocumentChooserAdapter(WidgetAdapter):
-    js_constructor = 'wagtail.documents.widgets.DocumentChooser'
+    js_constructor = 'wagtail.contrib.documents.widgets.DocumentChooser'
 
     def js_args(self, widget):
         return [

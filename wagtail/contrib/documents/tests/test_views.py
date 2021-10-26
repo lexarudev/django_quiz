@@ -11,7 +11,7 @@ from django.test import TestCase
 from django.test.utils import override_settings
 from django.urls import reverse
 
-from wagtail.documents import models
+from wagtail.contrib.documents import models
 
 
 @override_settings(WAGTAILDOCS_SERVE_METHOD=None)
@@ -53,8 +53,8 @@ class TestServeView(TestCase):
             self.get(self.pdf_document)['Content-Disposition'],
             'inline')
 
-    @mock.patch('wagtail.documents.views.serve.hooks')
-    @mock.patch('wagtail.documents.views.serve.get_object_or_404')
+    @mock.patch('wagtail.contrib.documents.views.serve.hooks')
+    @mock.patch('wagtail.contrib.documents.views.serve.get_object_or_404')
     def test_non_local_filesystem_content_disposition_header(
         self, mock_get_object_or_404, mock_hooks
     ):
@@ -87,8 +87,8 @@ class TestServeView(TestCase):
             )
         )
 
-    @mock.patch('wagtail.documents.views.serve.hooks')
-    @mock.patch('wagtail.documents.views.serve.get_object_or_404')
+    @mock.patch('wagtail.contrib.documents.views.serve.hooks')
+    @mock.patch('wagtail.contrib.documents.views.serve.get_object_or_404')
     def test_non_local_filesystem_inline_content_disposition_header(
         self, mock_get_object_or_404, mock_hooks
     ):
@@ -308,8 +308,8 @@ class TestServeWithUnicodeFilename(TestCase):
         response = self.client.get(reverse('wagtaildocs_serve', args=(self.document.id, self.filename)))
         self.assertEqual(response.status_code, 200)
 
-    @mock.patch('wagtail.documents.views.serve.hooks')
-    @mock.patch('wagtail.documents.views.serve.get_object_or_404')
+    @mock.patch('wagtail.contrib.documents.views.serve.hooks')
+    @mock.patch('wagtail.contrib.documents.views.serve.get_object_or_404')
     def test_non_local_filesystem_unicode_content_disposition_header(
         self, mock_get_object_or_404, mock_hooks
     ):

@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.contrib import admin
 
-from wagtail.documents.models import Document
+from wagtail.contrib.documents.models import Document
 
 
 if hasattr(settings, 'WAGTAILDOCS_DOCUMENT_MODEL') and settings.WAGTAILDOCS_DOCUMENT_MODEL != 'wagtaildocs.Document':

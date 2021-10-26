@@ -9,8 +9,8 @@ from django.test.utils import override_settings
 from django.urls import reverse
 
 from wagtail.admin.admin_url_finder import AdminURLFinder
-from wagtail.documents import get_document_model, models
-from wagtail.documents.tests.utils import get_test_document_file
+from wagtail.contrib.documents import get_document_model, models
+from wagtail.contrib.documents.tests.utils import get_test_document_file
 from wagtail.models import Collection, GroupCollectionPermission, Page
 from wagtail.test.testapp.models import (
     CustomDocument, CustomDocumentWithAuthor, EventPage, EventPageRelatedLink)

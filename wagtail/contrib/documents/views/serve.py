@@ -10,8 +10,8 @@ from django.views.decorators.cache import cache_control
 from django.views.decorators.http import etag
 
 from wagtail import hooks
-from wagtail.documents import get_document_model
-from wagtail.documents.models import document_served
+from wagtail.contrib.documents import get_document_model
+from wagtail.contrib.documents.models import document_served
 from wagtail.forms import PasswordViewRestrictionForm
 from wagtail.models import CollectionViewRestriction
 from wagtail.utils import sendfile_streaming_backend
