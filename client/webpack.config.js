@@ -2,17 +2,20 @@ const path = require('path');
 
 // Generates a path to the output bundle to be loaded in the browser.
 const getOutputPath = (app, filename) => {
-  let appLabel = `wagtail${app}`;
-
-  // Exceptions
   if (app === 'documents') {
-    appLabel = 'wagtaildocs';
+    return path.join('wagtail', 'contrib', 'documents', 'static', 'wagtaildocs', 'js', filename);
+  } else if (app === 'images') {
+    return path.join('wagtail', 'contrib', 'images', 'static', 'wagtailimages', 'js', filename);
+  } else if (app === 'snippets') {
+    return path.join('wagtail', 'contrib', 'snippets', 'static', 'wagtailsnippets', 'js', filename);
   } else if (app === 'admin') {
     // Wagtail admin static is in the top-level app
-    app = '';
+    return path.join('wagtail', 'static', 'wagtailadmin', 'js', filename);
+  } else if (app === 'contrib/table_block') {
+    return path.join('wagtail', 'contrib', 'table_block', 'static', 'table_block', 'js', filename);
+  } else {
+    return path.join('wagtail', app, 'static', `wagtail${app}`, 'js', filename);
   }
-
-  return path.join('wagtail', app, 'static', appLabel, 'js', filename);
 };
 
 // Mapping from package name to exposed global variable.
