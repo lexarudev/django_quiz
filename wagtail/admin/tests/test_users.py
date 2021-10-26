@@ -57,27 +57,27 @@ class TestUserFormHelpers(TestCase):
         self.assertIs(user_form, UserCreationForm)
 
     @override_settings(
-        WAGTAIL_USER_CREATION_FORM='wagtail.admin.tests.users.CustomUserCreationForm'
+        WAGTAIL_USER_CREATION_FORM='wagtail.admin.tests.test_users.CustomUserCreationForm'
     )
     def test_get_user_creation_form_with_custom_form(self):
         user_form = get_user_creation_form()
         self.assertIs(user_form, CustomUserCreationForm)
 
     @override_settings(
-        WAGTAIL_USER_EDIT_FORM='wagtail.admin.tests.users.CustomUserEditForm'
+        WAGTAIL_USER_EDIT_FORM='wagtail.admin.tests.test_users.CustomUserEditForm'
     )
     def test_get_user_edit_form_with_custom_form(self):
         user_form = get_user_edit_form()
         self.assertIs(user_form, CustomUserEditForm)
 
     @override_settings(
-        WAGTAIL_USER_CREATION_FORM='wagtail.admin.tests.users.CustomUserCreationFormDoesNotExist'
+        WAGTAIL_USER_CREATION_FORM='wagtail.admin.tests.test_users.CustomUserCreationFormDoesNotExist'
     )
     def test_get_user_creation_form_with_invalid_form(self):
         self.assertRaises(ImproperlyConfigured, get_user_creation_form)
 
     @override_settings(
-        WAGTAIL_USER_EDIT_FORM='wagtail.admin.tests.users.CustomUserEditFormDoesNotExist'
+        WAGTAIL_USER_EDIT_FORM='wagtail.admin.tests.test_users.CustomUserEditFormDoesNotExist'
     )
     def test_get_user_edit_form_with_invalid_form(self):
         self.assertRaises(ImproperlyConfigured, get_user_edit_form)
@@ -224,7 +224,7 @@ class TestUserCreateView(TestCase, WagtailTestUtils):
 
     @unittest.skipUnless(settings.AUTH_USER_MODEL == 'customuser.CustomUser', "Only applicable to CustomUser")
     @override_settings(
-        WAGTAIL_USER_CREATION_FORM='wagtail.admin.tests.users.CustomUserCreationForm',
+        WAGTAIL_USER_CREATION_FORM='wagtail.admin.tests.test_users.CustomUserCreationForm',
         WAGTAIL_USER_CUSTOM_FIELDS=['country', 'document'],
     )
     def test_create_with_custom_form(self):
@@ -888,7 +888,7 @@ class TestUserEditView(TestCase, WagtailTestUtils):
 
     @unittest.skipUnless(settings.AUTH_USER_MODEL == 'customuser.CustomUser', "Only applicable to CustomUser")
     @override_settings(
-        WAGTAIL_USER_EDIT_FORM='wagtail.admin.tests.users.CustomUserEditForm',
+        WAGTAIL_USER_EDIT_FORM='wagtail.admin.tests.test_users.CustomUserEditForm',
     )
     def test_edit_with_custom_form(self):
         response = self.post({
@@ -1642,7 +1642,7 @@ class TestGroupViewSet(TestCase):
 
     def test_get_group_viewset_cls_with_custom_form(self):
         with unittest.mock.patch.object(
-            self.app_config, 'group_viewset', new='wagtail.admin.tests.users.CustomGroupViewSet'
+            self.app_config, 'group_viewset', new='wagtail.admin.tests.test_users.CustomGroupViewSet'
         ):
             group_viewset = get_group_viewset_cls(self.app_config)
         self.assertIs(group_viewset, CustomGroupViewSet)
@@ -1658,11 +1658,11 @@ class TestGroupViewSet(TestCase):
 
     def test_get_group_viewset_cls_custom_form_does_not_exist(self):
         with unittest.mock.patch.object(
-            self.app_config, 'group_viewset', new='wagtail.admin.tests.users.CustomClassDoesNotExist'
+            self.app_config, 'group_viewset', new='wagtail.admin.tests.test_users.CustomClassDoesNotExist'
         ):
             with self.assertRaises(ImproperlyConfigured) as exc_info:
                 get_group_viewset_cls(self.app_config)
             self.assertIn(
-                'Module "wagtail.admin.tests.users" does not define a "CustomClassDoesNotExist" attribute/class',
+                'Module "wagtail.admin.tests.test_users" does not define a "CustomClassDoesNotExist" attribute/class',
                 str(exc_info.exception)
             )
