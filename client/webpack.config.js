@@ -7,8 +7,9 @@ const getOutputPath = (app, filename) => {
   // Exceptions
   if (app === 'documents') {
     appLabel = 'wagtaildocs';
-  } else if (app === 'contrib/table_block') {
-    appLabel = 'table_block';
+  } else if (app === 'admin') {
+    // Wagtail admin static is in the top-level app
+    app = '';
   }
 
   return path.join('wagtail', app, 'static', appLabel, 'js', filename);
