@@ -363,7 +363,7 @@ class TestAccountSection(TestCase, WagtailTestUtils, TestAccountSectionUtilsMixi
         # Check that the user was redirected to the account page
         self.assertRedirects(response, reverse('wagtailadmin_account'))
 
-        profile = admin.UserProfile.get_for_user(get_user_model().objects.get(pk=self.user.pk))
+        profile = UserProfile.get_for_user(get_user_model().objects.get(pk=self.user.pk))
 
         # Check that the notification preferences are as submitted
         self.assertFalse(profile.submitted_notifications)
@@ -379,7 +379,7 @@ class TestAccountSection(TestCase, WagtailTestUtils, TestAccountSectionUtilsMixi
         # Check that the user was redirected to the account page
         self.assertRedirects(response, reverse('wagtailadmin_account'))
 
-        profile = admin.UserProfile.get_for_user(self.user)
+        profile = UserProfile.get_for_user(self.user)
         profile.refresh_from_db()
 
         # Check that the language preferences are stored
@@ -390,7 +390,7 @@ class TestAccountSection(TestCase, WagtailTestUtils, TestAccountSectionUtilsMixi
         self.assertContains(response, '<html class="no-js" lang="es" dir="ltr">')
 
     def test_unset_language_preferences(self):
-        profile = admin.UserProfile.get_for_user(self.user)
+        profile = UserProfile.get_for_user(self.user)
         profile.preferred_language = 'en'
         profile.save()
 
@@ -429,7 +429,7 @@ class TestAccountSection(TestCase, WagtailTestUtils, TestAccountSectionUtilsMixi
         # Check that the user was redirected to the account page
         self.assertRedirects(response, reverse('wagtailadmin_account'))
 
-        profile = admin.UserProfile.get_for_user(self.user)
+        profile = UserProfile.get_for_user(self.user)
         profile.refresh_from_db()
 
         # Check that the current time zone is stored
@@ -444,7 +444,7 @@ class TestAccountSection(TestCase, WagtailTestUtils, TestAccountSectionUtilsMixi
         # Check that the user was redirected to the account page
         self.assertRedirects(response, reverse('wagtailadmin_account'))
 
-        profile = admin.UserProfile.get_for_user(self.user)
+        profile = UserProfile.get_for_user(self.user)
         profile.refresh_from_db()
 
         # Check that the current time zone are stored
@@ -510,12 +510,12 @@ class TestAccountUploadAvatar(TestCase, WagtailTestUtils, TestAccountSectionUtil
         # Check that the user was redirected to the account page
         self.assertRedirects(response, reverse('wagtailadmin_account'))
 
-        profile = admin.UserProfile.get_for_user(self.user)
+        profile = UserProfile.get_for_user(self.user)
         profile.refresh_from_db()
         self.assertIn('other.png', profile.avatar.url)
 
     def test_user_upload_another_image_removes_previous_one(self):
-        profile = admin.UserProfile.get_for_user(self.user)
+        profile = UserProfile.get_for_user(self.user)
         profile.avatar = self.avatar
         profile.save()
 
@@ -540,7 +540,7 @@ class TestAccountUploadAvatar(TestCase, WagtailTestUtils, TestAccountSectionUtil
         """
         Tests that submitting a blank value for avatar doesn't remove it.
         """
-        profile = admin.UserProfile.get_for_user(self.user)
+        profile = UserProfile.get_for_user(self.user)
         profile.avatar = self.avatar
         profile.save()
 
@@ -557,7 +557,7 @@ class TestAccountUploadAvatar(TestCase, WagtailTestUtils, TestAccountSectionUtil
         """
         Tests that submitting a blank value for avatar doesn't remove it.
         """
-        profile = admin.UserProfile.get_for_user(self.user)
+        profile = UserProfile.get_for_user(self.user)
         profile.avatar = self.avatar
         profile.save()
 

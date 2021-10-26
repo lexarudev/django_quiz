@@ -1025,17 +1025,17 @@ class TestUserProfileCreation(TestCase, WagtailTestUtils):
         )
 
     def test_user_created_without_profile(self):
-        self.assertEqual(admin.UserProfile.objects.filter(user=self.test_user).count(), 0)
-        with self.assertRaises(admin.UserProfile.DoesNotExist):
+        self.assertEqual(UserProfile.objects.filter(user=self.test_user).count(), 0)
+        with self.assertRaises(UserProfile.DoesNotExist):
             self.test_user.wagtail_userprofile
 
     def test_user_profile_created_when_method_called(self):
-        self.assertIsInstance(admin.UserProfile.get_for_user(self.test_user), admin.UserProfile)
+        self.assertIsInstance(UserProfile.get_for_user(self.test_user), UserProfile)
         # and get it from the db too
-        self.assertEqual(admin.UserProfile.objects.filter(user=self.test_user).count(), 1)
+        self.assertEqual(UserProfile.objects.filter(user=self.test_user).count(), 1)
 
     def test_avatar_empty_on_profile_creation(self):
-        user_profile = admin.UserProfile.get_for_user(self.test_user)
+        user_profile = UserProfile.get_for_user(self.test_user)
         self.assertFalse(user_profile.avatar)
 
 

@@ -30,7 +30,7 @@ class NotificationPreferencesForm(forms.ModelForm):
             del self.fields['updated_comments_notifications']
 
     class Meta:
-        model = admin.UserProfile
+        model = UserProfile
         fields = ['submitted_notifications', 'approved_notifications', 'rejected_notifications', 'updated_comments_notifications']
         widgets = {
             'submitted_notifications': SwitchInput(),
@@ -77,7 +77,7 @@ class LocalePreferencesForm(forms.ModelForm):
     )
 
     class Meta:
-        model = admin.UserProfile
+        model = UserProfile
         fields = ['preferred_language', 'current_time_zone']
 
 
@@ -119,5 +119,5 @@ class AvatarPreferencesForm(forms.ModelForm):
         super().save(commit=commit)
 
     class Meta:
-        model = admin.UserProfile
+        model = UserProfile
         fields = ["avatar"]

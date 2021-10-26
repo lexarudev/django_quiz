@@ -1235,9 +1235,9 @@ class TestNotificationPreferences(TestCase, WagtailTestUtils):
             password='password',
         )
 
-        self.superuser_profile = admin.UserProfile.get_for_user(self.superuser)
-        self.moderator2_profile = admin.UserProfile.get_for_user(self.moderator2)
-        self.submitter_profile = admin.UserProfile.get_for_user(self.submitter)
+        self.superuser_profile = UserProfile.get_for_user(self.superuser)
+        self.moderator2_profile = UserProfile.get_for_user(self.moderator2)
+        self.submitter_profile = UserProfile.get_for_user(self.submitter)
 
         # Create a page
         root_page = Page.objects.get(id=2)

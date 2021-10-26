@@ -47,7 +47,7 @@ class TestAvatarTemplateTag(TestCase, WagtailTestUtils):
         self.assertIn('default-user-avatar', url)
 
     def test_uploaded_avatar(self):
-        user_profile = admin.UserProfile.get_for_user(self.test_user)
+        user_profile = UserProfile.get_for_user(self.test_user)
         user_profile.avatar = get_test_image_file(filename='custom-avatar.png')
         user_profile.save()
 

@@ -186,8 +186,8 @@ class TestNotificationPreferences(TestCase, WagtailTestUtils):
         self.submitter = self.create_user('submitter', 'submitter@email.com', 'password')
 
         # User profiles for moderator2 and the submitter
-        self.moderator2_profile = admin.UserProfile.get_for_user(self.moderator2)
-        self.submitter_profile = admin.UserProfile.get_for_user(self.submitter)
+        self.moderator2_profile = UserProfile.get_for_user(self.moderator2)
+        self.submitter_profile = UserProfile.get_for_user(self.submitter)
 
         # Create a page and submit it for moderation
         self.child_page = SimplePage(

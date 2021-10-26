@@ -192,7 +192,7 @@ def account(request):
     # Fetch the user and profile objects once and pass into each panel
     # We need to use the same instances for all forms so they don't overwrite each other
     user = request.user
-    profile = admin.UserProfile.get_for_user(user)
+    profile = UserProfile.get_for_user(user)
 
     # Panels
     panels = [

@@ -44,7 +44,7 @@ def wagtailuserbar(context, position='bottom-right'):
         return ''
 
     # Render the userbar using the user's preferred admin language
-    userprofile = admin.UserProfile.get_for_user(user)
+    userprofile = UserProfile.get_for_user(user)
     with translation.override(userprofile.get_preferred_language()):
         page = get_page_instance(context)
 

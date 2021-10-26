@@ -2538,7 +2538,7 @@ class TestCommenting(TestCase, WagtailTestUtils):
 
     def test_updated_comments_notifications_profile_setting(self):
         # Users can disable commenting notifications globally from account settings
-        profile = admin.UserProfile.get_for_user(self.subscriber)
+        profile = UserProfile.get_for_user(self.subscriber)
         profile.updated_comments_notifications = False
         profile.save()
 
