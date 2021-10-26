@@ -28,7 +28,7 @@ from wagtail.admin.ui.sidebar import PageExplorerMenuItem as PageExplorerMenuIte
 from wagtail.admin.ui.sidebar import SubMenuItem as SubMenuItemComponent
 from wagtail.admin.viewsets import viewsets
 from wagtail.admin.widgets import Button, ButtonWithDropdownFromHook, PageListingButton
-from wagtail.models import Collection, Page, Task, UserPagePermissionsProxy, Workflow
+from wagtail.models import Collection, Page, UserPagePermissionsProxy, workflows
 from wagtail.permissions import (
     collection_permission_policy, task_permission_policy, workflow_permission_policy)
 from wagtail.whitelist import allow_without_attributes, attribute_rule, check_url
@@ -817,7 +817,7 @@ class WorkflowAdminURLFinder(ModelAdminURLFinder):
     edit_url_name = 'wagtailadmin_workflows:edit'
 
 
-register_admin_url_finder(Workflow, WorkflowAdminURLFinder)
+register_admin_url_finder(workflows.Workflow, WorkflowAdminURLFinder)
 
 
 class WorkflowTaskAdminURLFinder(ModelAdminURLFinder):
@@ -825,4 +825,4 @@ class WorkflowTaskAdminURLFinder(ModelAdminURLFinder):
     edit_url_name = 'wagtailadmin_workflows:edit_task'
 
 
-register_admin_url_finder(Task, WorkflowTaskAdminURLFinder)
+register_admin_url_finder(workflows.Task, WorkflowTaskAdminURLFinder)
