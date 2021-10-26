@@ -31,13 +31,13 @@ from wagtail.admin.search import admin_search_areas
 from wagtail.admin.staticfiles import versioned_static as versioned_static_func
 from wagtail.admin.ui import sidebar
 from wagtail.core import hooks
+from wagtail.core.coreutils import camelcase_to_underscore
+from wagtail.core.coreutils import cautious_slugify as _cautious_slugify
+from wagtail.core.coreutils import escape_script, get_content_type_label
 from wagtail.core.models import (
     Collection, CollectionViewRestriction, Locale, Page, PageViewRestriction,
     UserPagePermissionsProxy)
 from wagtail.core.telepath import JSContext
-from wagtail.core.utils import camelcase_to_underscore
-from wagtail.core.utils import cautious_slugify as _cautious_slugify
-from wagtail.core.utils import escape_script, get_content_type_label
 from wagtail.users.utils import get_gravatar_url
 
 
