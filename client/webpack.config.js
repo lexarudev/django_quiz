@@ -13,9 +13,8 @@ const getOutputPath = (app, filename) => {
     return path.join('wagtail', 'static', 'wagtailadmin', 'js', filename);
   } else if (app === 'contrib/table_block') {
     return path.join('wagtail', 'contrib', 'table_block', 'static', 'table_block', 'js', filename);
-  } else {
-    return path.join('wagtail', app, 'static', `wagtail${app}`, 'js', filename);
   }
+  return path.join('wagtail', app, 'static', `wagtail${app}`, 'js', filename);
 };
 
 // Mapping from package name to exposed global variable.
