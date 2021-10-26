@@ -16,7 +16,7 @@ from wagtail import hooks
 from wagtail.admin.admin_url_finder import AdminURLFinder
 from wagtail.compat import AUTH_USER_APP_LABEL, AUTH_USER_MODEL_NAME
 from wagtail.models import (
-    Collection, GroupCollectionPermission, GroupPagePermission, Page, UserProfile)
+    Collection, GroupCollectionPermission, GroupPagePermission, Page, UserProfile, admin)
 from wagtail.test.utils import WagtailTestUtils
 from wagtail.users.forms import UserCreationForm, UserEditForm
 from wagtail.users.views.groups import GroupViewSet
@@ -1025,17 +1025,17 @@ class TestUserProfileCreation(TestCase, WagtailTestUtils):
         )
 
     def test_user_created_without_profile(self):
-        self.assertEqual(UserProfile.objects.filter(user=self.test_user).count(), 0)
-        with self.assertRaises(UserProfile.DoesNotExist):
+        self.assertEqual(admin.UserProfile.objects.filter(user=self.test_user).count(), 0)
+        with self.assertRaises(admin.UserProfile.DoesNotExist):
             self.test_user.wagtail_userprofile
 
     def test_user_profile_created_when_method_called(self):
-        self.assertIsInstance(UserProfile.get_for_user(self.test_user), UserProfile)
+        self.assertIsInstance(admin.UserProfile.get_for_user(self.test_user), admin.UserProfile)
         # and get it from the db too
-        self.assertEqual(UserProfile.objects.filter(user=self.test_user).count(), 1)
+        self.assertEqual(admin.UserProfile.objects.filter(user=self.test_user).count(), 1)
 
     def test_avatar_empty_on_profile_creation(self):
-        user_profile = UserProfile.get_for_user(self.test_user)
+        user_profile = admin.UserProfile.get_for_user(self.test_user)
         self.assertFalse(user_profile.avatar)
 
 

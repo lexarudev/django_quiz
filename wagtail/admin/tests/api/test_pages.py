@@ -8,7 +8,7 @@ from django.utils import timezone
 
 from wagtail import hooks
 from wagtail.api.v2.tests.test_pages import TestPageDetail, TestPageListing
-from wagtail.models import Locale, Page, UserProfile
+from wagtail.models import Locale, Page, UserProfile, admin
 from wagtail.test.demosite import models
 from wagtail.test.testapp.models import SimplePage, StreamPage
 
@@ -106,7 +106,7 @@ class TestAdminPageListing(AdminAPITestCase, TestPageListing):
     def test_get_in_non_content_language(self):
         # set logged-in user's admin UI language to Swedish
         user = get_user_model().objects.get(email='test@email.com')
-        UserProfile.objects.update_or_create(user=user, defaults={'preferred_language': 'se'})
+        admin.UserProfile.objects.update_or_create(user=user, defaults={'preferred_language': 'se'})
 
         response = self.get_response()
 

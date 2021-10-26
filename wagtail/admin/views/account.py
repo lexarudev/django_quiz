@@ -21,7 +21,7 @@ from wagtail.admin.forms.account import (
 from wagtail.admin.forms.auth import LoginForm, PasswordChangeForm, PasswordResetForm
 from wagtail.admin.localization import get_available_admin_languages, get_available_admin_time_zones
 from wagtail.log_actions import log
-from wagtail.models import UserPagePermissionsProxy, UserProfile
+from wagtail.models import UserPagePermissionsProxy, UserProfile, admin
 from wagtail.utils.loading import get_custom_form
 
 
@@ -192,7 +192,7 @@ def account(request):
     # Fetch the user and profile objects once and pass into each panel
     # We need to use the same instances for all forms so they don't overwrite each other
     user = request.user
-    profile = UserProfile.get_for_user(user)
+    profile = admin.UserProfile.get_for_user(user)
 
     # Panels
     panels = [

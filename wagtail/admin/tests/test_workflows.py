@@ -14,7 +14,7 @@ from freezegun import freeze_time
 from wagtail.admin.admin_url_finder import AdminURLFinder
 from wagtail.models import (
     GroupApprovalTask, Page, Task, TaskState, UserProfile, Workflow, WorkflowPage, WorkflowState,
-    WorkflowTask)
+    WorkflowTask, admin)
 from wagtail.signals import page_published
 from wagtail.test.testapp.models import SimplePage, SimpleTask
 from wagtail.test.utils import WagtailTestUtils
@@ -1235,9 +1235,9 @@ class TestNotificationPreferences(TestCase, WagtailTestUtils):
             password='password',
         )
 
-        self.superuser_profile = UserProfile.get_for_user(self.superuser)
-        self.moderator2_profile = UserProfile.get_for_user(self.moderator2)
-        self.submitter_profile = UserProfile.get_for_user(self.submitter)
+        self.superuser_profile = admin.UserProfile.get_for_user(self.superuser)
+        self.moderator2_profile = admin.UserProfile.get_for_user(self.moderator2)
+        self.submitter_profile = admin.UserProfile.get_for_user(self.submitter)
 
         # Create a page
         root_page = Page.objects.get(id=2)

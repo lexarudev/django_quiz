@@ -9,7 +9,7 @@ from django.utils.translation import override
 
 from wagtail.admin.auth import users_with_page_permission
 from wagtail.coreutils import camelcase_to_underscore
-from wagtail.models import UserProfile, workflows
+from wagtail.models import UserProfile, admin, workflows
 
 
 logger = logging.getLogger('wagtail.admin')
@@ -84,7 +84,7 @@ def send_notification(recipient_users, notification, extra_context):
     email_recipients = [
         recipient for recipient in recipient_users
         if recipient.is_active and recipient.email and getattr(
-            UserProfile.get_for_user(recipient),
+            admin.UserProfile.get_for_user(recipient),
             notification + '_notifications'
         )
     ]
@@ -208,7 +208,7 @@ class EmailNotificationMixin:
         return {
             recipient for recipient in self.get_recipient_users(instance, **kwargs)
             if recipient.is_active and recipient.email and getattr(
-                UserProfile.get_for_user(recipient),
+                admin.UserProfile.get_for_user(recipient),
                 self.notification + '_notifications'
             )
         }

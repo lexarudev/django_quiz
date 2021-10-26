@@ -10,7 +10,7 @@ from django.core.mail import EmailMultiAlternatives
 from django.test import TestCase, override_settings
 from django.urls import reverse
 
-from wagtail.models import Page, PageRevision, UserProfile
+from wagtail.models import Page, PageRevision, UserProfile, admin
 from wagtail.signals import page_published
 from wagtail.test.testapp.models import SimplePage
 from wagtail.test.utils import WagtailTestUtils
@@ -186,8 +186,8 @@ class TestNotificationPreferences(TestCase, WagtailTestUtils):
         self.submitter = self.create_user('submitter', 'submitter@email.com', 'password')
 
         # User profiles for moderator2 and the submitter
-        self.moderator2_profile = UserProfile.get_for_user(self.moderator2)
-        self.submitter_profile = UserProfile.get_for_user(self.submitter)
+        self.moderator2_profile = admin.UserProfile.get_for_user(self.moderator2)
+        self.submitter_profile = admin.UserProfile.get_for_user(self.submitter)
 
         # Create a page and submit it for moderation
         self.child_page = SimplePage(
