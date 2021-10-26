@@ -1,3 +1,11 @@
+# #-#-#-#-#  django.po (Wagtail)  #-#-#-#-#
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Translators:
+# JaredOzzy <jaredozzy@gmail.com>, 2019
+# #-#-#-#-#  django.po (Wagtail)  #-#-#-#-#
 # SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
@@ -18,11 +26,23 @@ msgstr ""
 "Language: af\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgid "Save"
+msgstr "Stoor"
+
+msgid "Choose"
+msgstr "Kies"
+
+msgid "Name"
+msgstr "Naam"
+
 msgid "Move up"
 msgstr "Skyf op"
 
 msgid "Move down"
 msgstr "Skyf af"
+
+msgid "Date"
+msgstr "Datum"
 
 msgid "Locked"
 msgstr "Gesluit"

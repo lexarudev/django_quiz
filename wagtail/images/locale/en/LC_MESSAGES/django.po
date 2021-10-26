@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2021-07-13 13:35+0100\n"
+"POT-Creation-Date: 2021-10-26 17:39+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -16,6 +16,7 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: apps.py:10
 msgid "Wagtail images"
@@ -158,39 +159,39 @@ msgstr ""
 msgid "Select images in choosers"
 msgstr ""
 
-#: models.py:65
+#: models.py:137
 msgid "title"
 msgstr ""
 
-#: models.py:67
+#: models.py:139
 msgid "file"
 msgstr ""
 
-#: models.py:69
+#: models.py:141
 msgid "width"
 msgstr ""
 
-#: models.py:70
+#: models.py:142
 msgid "height"
 msgstr ""
 
-#: models.py:71
+#: models.py:143
 msgid "created at"
 msgstr ""
 
-#: models.py:73 models.py:608
+#: models.py:145 models.py:699
 msgid "uploaded by user"
 msgstr ""
 
-#: models.py:77
+#: models.py:149
 msgid "tags"
 msgstr ""
 
-#: models.py:376
+#: models.py:400
 msgid "image"
 msgstr ""
 
-#: models.py:377
+#: models.py:401
 msgid "images"
 msgstr ""
 
@@ -203,16 +204,12 @@ msgid "Search"
 msgstr ""
 
 #: templates/wagtailimages/chooser/chooser.html:12
-#: templates/wagtailimages/chooser/chooser.html:54
+#: templates/wagtailimages/chooser/upload_form.html:16
 msgid "Upload"
 msgstr ""
 
 #: templates/wagtailimages/chooser/chooser.html:28
 msgid "Popular tags"
-msgstr ""
-
-#: templates/wagtailimages/chooser/chooser.html:54
-msgid "Uploading…"
 msgstr ""
 
 #: templates/wagtailimages/chooser/results.html:6
@@ -242,6 +239,10 @@ msgstr ""
 msgid "Insert image"
 msgstr ""
 
+#: templates/wagtailimages/chooser/upload_form.html:16
+msgid "Uploading…"
+msgstr ""
+
 #: templates/wagtailimages/homepage/site_summary_images.html:5
 #, python-format
 msgid ""
@@ -266,11 +267,11 @@ msgstr ""
 msgid "Add an image"
 msgstr ""
 
-#: templates/wagtailimages/images/add.html:27
+#: templates/wagtailimages/images/add.html:52
 msgid "Add image"
 msgstr ""
 
-#: templates/wagtailimages/images/add.html:43
+#: templates/wagtailimages/images/add.html:68
 #: templates/wagtailimages/images/edit.html:55
 #: templates/wagtailimages/images/edit.html:112
 msgid "Save"
@@ -356,8 +357,8 @@ msgid "Usage"
 msgstr ""
 
 #: templates/wagtailimages/images/index.html:6
-#: templates/wagtailimages/images/index.html:25 wagtail_hooks.py:46
-#: wagtail_hooks.py:160
+#: templates/wagtailimages/images/index.html:25 wagtail_hooks.py:47
+#: wagtail_hooks.py:161
 msgid "Images"
 msgstr ""
 
@@ -471,11 +472,11 @@ msgstr ""
 msgid "Sorry, upload failed."
 msgstr ""
 
-#: templates/wagtailimages/multiple/add.html:74 views/chooser.py:29
+#: templates/wagtailimages/multiple/add.html:74 views/chooser.py:125
 msgid "Server Error"
 msgstr ""
 
-#: templates/wagtailimages/multiple/add.html:75 views/chooser.py:30
+#: templates/wagtailimages/multiple/add.html:75 views/chooser.py:126
 msgid "Report this error to your webmaster with the following information:"
 msgstr ""
 
@@ -496,6 +497,7 @@ msgid "Search images"
 msgstr ""
 
 #: views/images.py:151
+#, python-brace-format
 msgid "Image '{0}' updated."
 msgstr ""
 
@@ -518,10 +520,12 @@ msgid "Delete"
 msgstr ""
 
 #: views/images.py:271
+#, python-brace-format
 msgid "Image '{0}' deleted."
 msgstr ""
 
 #: views/images.py:301
+#, python-brace-format
 msgid "Image '{0}' added."
 msgstr ""
 
@@ -529,11 +533,11 @@ msgstr ""
 msgid "The image could not be created due to errors."
 msgstr ""
 
-#: wagtail_hooks.py:89
+#: wagtail_hooks.py:90
 msgid "Image"
 msgstr ""
 
-#: wagtail_hooks.py:179
+#: wagtail_hooks.py:180
 #, python-format
 msgid "%(count)s image"
 msgid_plural "%(count)s images"
