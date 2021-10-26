@@ -40,7 +40,11 @@ def get_group_viewset_cls(app_config):
 
 @hooks.register('register_admin_viewset')
 def register_viewset():
-    app_config = apps.get_app_config("wagtailusers")
+    try:
+        app_config = apps.get_app_config("wagtailusers")
+    except LookupError:
+        app_config = apps.get_app_config("wagtailcore")
+
     group_viewset_cls = get_group_viewset_cls(app_config)
     return group_viewset_cls('wagtailusers_groups', url_prefix='groups')
 
