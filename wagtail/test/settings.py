@@ -132,7 +132,7 @@ INSTALLED_APPS = [
     'wagtail.contrib.table_block',
     'wagtail.contrib.forms',
     'wagtail.search',
-    'wagtail.embeds',
+    'wagtail.contrib.embeds',
     'wagtail.contrib.images',
     'wagtail.sites',
     'wagtail.locales',
