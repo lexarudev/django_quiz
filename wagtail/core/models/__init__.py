@@ -811,6 +811,7 @@ class Page(AbstractPage, index.Indexed, ClusterableModel, metaclass=PageBase):
 
         return localized
 
+    @overridable
     def route(self, request, path_components):
         if path_components:
             # request is for a child of this page
@@ -822,12 +823,12 @@ class Page(AbstractPage, index.Indexed, ClusterableModel, metaclass=PageBase):
             except Page.DoesNotExist:
                 raise Http404
 
-            return subpage.specific.route(request, remaining_components)
+            return subpage.route(request, remaining_components)
 
         else:
             # request is for this very page
             if self.live:
-                return RouteResult(self)
+                return RouteResult(self.specific)
             else:
                 raise Http404
 

@@ -504,7 +504,7 @@ class PagesAPIViewSet(BaseAPIViewSet):
             path_components = [component for component in path.split('/') if component]
 
             try:
-                page, _, _ = site.root_page.specific.route(request, path_components)
+                page, _, _ = site.root_page.route(request, path_components)
             except Http404:
                 return
 

@@ -68,14 +68,14 @@ Wagtail routes requests by iterating over the path components (separated with a 
                     raise Http404
 
                 # delegate further routing
-                return subpage.specific.route(request, remaining_components)
+                return subpage.route(request, remaining_components)
 
             else:
                 # request is for this very page
                 if self.live:
                     # Return a RouteResult that will tell Wagtail to call
                     # this page's serve() method
-                    return RouteResult(self)
+                    return RouteResult(self.specific)
                 else:
                     # the page matches the request, but isn't published, so 404
                     raise Http404

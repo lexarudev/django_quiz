@@ -267,7 +267,7 @@ def external_link(request):
             # Loop over possible sites to identify a page match
             for pk, url in possible_sites:
                 try:
-                    route = Site.objects.get(pk=pk).root_page.specific.route(
+                    route = Site.objects.get(pk=pk).root_page.route(
                         request,
                         [component for component in url.split('/') if component]
                     )

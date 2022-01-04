@@ -105,7 +105,7 @@ class RoutablePageMixin:
                     path += '/'.join(path_components) + '/'
 
                 view, args, kwargs = self.resolve_subpage(path)
-                return RouteResult(self, args=(view, args, kwargs))
+                return RouteResult(self.specific, args=(view, args, kwargs))
             except Http404:
                 pass
 
