@@ -309,9 +309,6 @@ class BaseSerializer(serializers.ModelSerializer):
         # Serialise core fields
         for field in fields:
             try:
-                if field.field_name == 'admin_display_title':
-                    instance = instance.specific_deferred
-
                 attribute = field.get_attribute(instance)
             except SkipField:
                 continue

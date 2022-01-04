@@ -202,8 +202,8 @@ class CopyPageAction:
                             'language_code': page_copy.locale.language_code
                         }
                     },
-                    'source': {'id': parent.id, 'title': parent.specific_deferred.get_admin_display_title()} if parent else None,
-                    'destination': {'id': to.id, 'title': to.specific_deferred.get_admin_display_title()} if to else None,
+                    'source': {'id': parent.id, 'title': parent.get_admin_display_title()} if parent else None,
+                    'destination': {'id': to.id, 'title': to.get_admin_display_title()} if to else None,
                     'keep_live': page_copy.live and self.keep_live,
                     'source_locale': {
                         'id': page.locale_id,

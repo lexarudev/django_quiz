@@ -27,7 +27,7 @@
                         </td>
                         <td>
                             {% if page.get_parent %}
-                                <a href="{% url 'wagtailadmin_explore' page.get_parent.id %}">{{ page.get_parent.specific_deferred.get_admin_display_title }}</a>
+                                <a href="{% url 'wagtailadmin_explore' page.get_parent.id %}">{{ page.get_parent.get_admin_display_title }}</a>
                             {% endif %}
                         </td>
                         <td>

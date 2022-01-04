@@ -832,6 +832,7 @@ class Page(AbstractPage, index.Indexed, ClusterableModel, metaclass=PageBase):
             else:
                 raise Http404
 
+    @overridable
     def get_admin_display_title(self):
         """
         Return the title for this page as it should appear in the admin backend;
@@ -1538,11 +1539,11 @@ class Page(AbstractPage, index.Indexed, ClusterableModel, metaclass=PageBase):
             data={
                 'source': {
                     'id': parent_before.id,
-                    'title': parent_before.specific_deferred.get_admin_display_title()
+                    'title': parent_before.get_admin_display_title()
                 },
                 'destination': {
                     'id': parent_after.id,
-                    'title': parent_after.specific_deferred.get_admin_display_title()
+                    'title': parent_after.get_admin_display_title()
                 }
             }
         )
@@ -1669,8 +1670,8 @@ class Page(AbstractPage, index.Indexed, ClusterableModel, metaclass=PageBase):
                         'id': alias.id,
                         'title': alias.get_admin_display_title()
                     },
-                    'source': {'id': source_parent.id, 'title': source_parent.specific_deferred.get_admin_display_title()} if source_parent else None,
-                    'destination': {'id': parent.id, 'title': parent.specific_deferred.get_admin_display_title()} if parent else None,
+                    'source': {'id': source_parent.id, 'title': source_parent.get_admin_display_title()} if source_parent else None,
+                    'destination': {'id': parent.id, 'title': parent.get_admin_display_title()} if parent else None,
                 },
             )
             if alias.live:
@@ -3841,7 +3842,7 @@ class PageLogEntryManager(BaseLogEntryManager):
         return PageLogEntryQuerySet(self.model, using=self._db)
 
     def get_instance_title(self, instance):
-        return instance.specific_deferred.get_admin_display_title()
+        return instance.get_admin_display_title()
 
     def log_action(self, instance, action, **kwargs):
         kwargs.update(page=instance)
