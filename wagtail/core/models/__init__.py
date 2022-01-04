@@ -755,6 +755,26 @@ class Page(AbstractPage, index.Indexed, ClusterableModel, metaclass=PageBase):
         """
         return ContentType.objects.get_for_id(self.content_type_id)
 
+    def overridable(fn):
+        """
+        A decorator that checks if the decorated method is overridden on the specific model and calls the specific version with a specific instance if so.
+
+        This can only be used on methods of the Page model, hence why it itself is a method on Page.
+        """
+        @functools.wraps(fn)
+        def wrapper(self, *args, **kwargs):
+            if (
+                self.specific_class is not None
+                and not isinstance(self, self.specific_class)
+                and getattr(Page, fn.__name__) != getattr(self.specific_class, fn.__name__)
+            ):
+                # The function is overridden in the specific class
+                return getattr(self.specific_deferred, fn.__name__)(*args, **kwargs)
+
+            return fn(self, *args, **kwargs)
+
+        return wrapper
+
     @property
     def localized_draft(self):
         """
