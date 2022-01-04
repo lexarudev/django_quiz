@@ -1418,6 +1418,7 @@ class Page(AbstractPage, index.Indexed, ClusterableModel, metaclass=PageBase):
 
         return can_create
 
+    @overridable
     def can_move_to(self, parent):
         """
         Checks if this page instance can be moved to be a subpage of a parent
@@ -2881,7 +2882,7 @@ class PagePermissionTester:
 
         # reject moves that are forbidden by subpage_types / parent_page_types rules
         # (these rules apply to superusers too)
-        if not self.page.specific.can_move_to(destination):
+        if not self.page.can_move_to(destination):
             return False
 
         # shortcut the trivial 'everything' / 'nothing' permissions
