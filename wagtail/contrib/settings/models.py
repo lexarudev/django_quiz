@@ -111,7 +111,7 @@ class BaseSetting(models.Model):
         page = getattr(self, attribute_name)
 
         if hasattr(page, 'specific'):
-            url = page.specific.get_url(getattr(self, '_request', None))
+            url = page.get_url(getattr(self, '_request', None))
         else:
             url = ""
 

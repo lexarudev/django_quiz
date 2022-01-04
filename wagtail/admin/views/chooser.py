@@ -272,7 +272,7 @@ def external_link(request):
                         [component for component in url.split('/') if component]
                     )
 
-                    matched_page = route.page.specific
+                    matched_page = route.page
 
                     internal_data = {
                         'id': matched_page.pk,

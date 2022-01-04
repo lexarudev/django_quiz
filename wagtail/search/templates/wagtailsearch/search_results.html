@@ -13,8 +13,8 @@
 
     {% if search_results %}
         <ul>
-            {% for result in search_results %}
-                <li><a href="{{ result.specific.url }}">{{ result.specific }}</a></li>
+            {% for result in search_results.specific %}
+                <li><a href="{{ result.url }}">{{ result }}</a></li>
             {% endfor %}
         </ul>
     {% endif %}
